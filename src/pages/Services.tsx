@@ -2,9 +2,11 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
+import Navbar from '@/components/Navbar';
 import { FileText, Layout, Paintbrush, GraduationCap } from 'lucide-react';
 import ServiceCard from '@/components/ServiceCard';
 import CTAButton from '@/components/CTAButton';
+import Footer from '@/components/Footer';
 
 const Services = () => {
   useEffect(() => {
@@ -127,6 +129,7 @@ const Services = () => {
 
   return (
     <PageTransition>
+      <Navbar />
       <main className="min-h-screen bg-cyber-black">
         <section className="py-24 px-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-cyber-gradient -z-10 opacity-30"></div>
@@ -197,6 +200,7 @@ const Services = () => {
             </motion.div>
           </div>
         </section>
+        <Footer />
       </main>
     </PageTransition>
   );

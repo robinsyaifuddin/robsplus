@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Phone } from 'lucide-react';
 import CTAButton from './CTAButton';
 
 const Navbar = () => {
@@ -25,11 +25,28 @@ const Navbar = () => {
     setIsMenuOpen(false);
   }, [location.pathname]);
   
+  // Helper function to handle hash links and normal links
+  const handleNavigation = (path: string) => {
+    if (path.startsWith('#')) {
+      // If we're already on the homepage, just scroll to the section
+      if (location.pathname === '/') {
+        const element = document.querySelector(path);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // If we're on another page, navigate to homepage + hash
+        window.location.href = '/' + path;
+      }
+    }
+  };
+  
   const navLinks = [
     { text: 'Beranda', href: '/' },
     { text: 'Layanan', href: '/services' },
     { text: 'Harga', href: '/#pricing' },
-    { text: 'Testimoni', href: '/#testimonials' }
+    { text: 'Testimoni', href: '/#testimonials' },
+    { text: 'Kontak', href: '/#contact' }
   ];
   
   return (
@@ -53,14 +70,25 @@ const Navbar = () => {
             <ul className="flex space-x-6">
               {navLinks.map((link) => (
                 <li key={link.text}>
-                  <Link 
-                    to={link.href} 
-                    className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
-                      location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
-                    }`}
-                  >
-                    {link.text}
-                  </Link>
+                  {link.href.startsWith('#') ? (
+                    <button
+                      onClick={() => handleNavigation(link.href)}
+                      className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                        location.hash === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                      }`}
+                    >
+                      {link.text}
+                    </button>
+                  ) : (
+                    <Link 
+                      to={link.href} 
+                      className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                        location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                      }`}
+                    >
+                      {link.text}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -68,6 +96,16 @@ const Navbar = () => {
             <CTAButton href="/order" size="sm">
               Order Jasa
             </CTAButton>
+            
+            <a 
+              href="https://wa.me/6282279722417?text=Halo%20ROB'sPlus,%20saya%20ingin%20konsultasi%20layanan."
+              className="text-sm flex items-center gap-1 text-cyber-lightBlue hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Phone size={14} />
+              <span>Konsultasi</span>
+            </a>
           </div>
           
           {/* Mobile Menu Button */}
@@ -94,20 +132,42 @@ const Navbar = () => {
             <ul className="flex flex-col space-y-4">
               {navLinks.map((link) => (
                 <li key={link.text}>
-                  <Link 
-                    to={link.href} 
-                    className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
-                      location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
-                    }`}
-                  >
-                    {link.text}
-                  </Link>
+                  {link.href.startsWith('#') ? (
+                    <button
+                      onClick={() => handleNavigation(link.href)}
+                      className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                        location.hash === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                      }`}
+                    >
+                      {link.text}
+                    </button>
+                  ) : (
+                    <Link 
+                      to={link.href} 
+                      className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                        location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                      }`}
+                    >
+                      {link.text}
+                    </Link>
+                  )}
                 </li>
               ))}
               <li>
                 <CTAButton href="/order" size="sm" className="w-full justify-center">
                   Order Jasa
                 </CTAButton>
+              </li>
+              <li>
+                <a 
+                  href="https://wa.me/6282279722417?text=Halo%20ROB'sPlus,%20saya%20ingin%20konsultasi%20layanan."
+                  className="flex items-center gap-1 text-sm text-cyber-lightBlue hover:underline w-full justify-center"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Phone size={14} />
+                  <span>Konsultasi</span>
+                </a>
               </li>
             </ul>
           </motion.div>

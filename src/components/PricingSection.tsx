@@ -8,79 +8,84 @@ import { cn } from '@/lib/utils';
 const pricingData = {
   "Jasa Tugas": [
     {
-      name: "Essentials",
-      price: "Mulai Rp 50K",
+      name: "Paket Dasar",
+      price: "Rp 50K - 150K",
       features: [
-        "Makalah (1-5 halaman)",
-        "Essay pendek",
+        "Esai pendek",
         "Laporan sederhana",
-        "Revisi 1x",
-        "Pengerjaan 3-5 hari"
+        "Perapihan format",
+        "Parafrasa dasar",
+        "Tata bahasa yang baik",
+        "Struktur yang rapi",
+        "Revisi sesuai paket"
       ],
       highlight: false,
     },
     {
-      name: "Professional",
-      price: "Mulai Rp 150K",
+      name: "Paket Menengah",
+      price: "Rp 150K - 250K",
       features: [
-        "Makalah (5-15 halaman)",
-        "KTI pendek",
+        "Makalah kompleks",
         "Proposal",
         "PPT presentasi",
-        "Revisi 3x",
-        "Pengerjaan 3-7 hari"
+        "Penelitian mendalam",
+        "Analisis data",
+        "Penulisan terstruktur",
+        "Penurunan plagiasi lanjut"
       ],
       highlight: true,
     },
     {
-      name: "Premium",
-      price: "Mulai Rp 300K",
+      name: "Paket Lanjutan",
+      price: "Rp 250K - 500K+",
       features: [
-        "Skripsi/KTI lengkap",
-        "Jurnal penelitian",
-        "Laporan kompleks",
-        "Parafrase & anti plagiasi",
-        "Revisi tak terbatas",
-        "Pengerjaan sesuai kebutuhan"
+        "KTI lengkap",
+        "Jurnal",
+        "Tugas penelitian khusus",
+        "Penelitian ekstensif",
+        "Analisis statistik",
+        "Standar akademik tinggi",
+        "Konsultasi intensif"
       ],
       highlight: false,
     }
   ],
   "Jasa Digital": [
     {
-      name: "Basic",
-      price: "Mulai Rp 100K",
+      name: "Paket Pemula",
+      price: "Rp 50K - 100K",
       features: [
         "Desain logo sederhana",
-        "Poster/banner media sosial",
-        "Paket 100 followers",
-        "Editing video singkat",
-        "Revisi 2x"
+        "Poster promosi dasar",
+        "Editing video pendek",
+        "Website statis sederhana",
+        "Followers/likes terbatas",
+        "Revisi terbatas"
       ],
       highlight: false,
     },
     {
-      name: "Business",
-      price: "Mulai Rp 300K",
+      name: "Paket Profesional",
+      price: "Rp 100K - 350K",
       features: [
-        "Website 1-3 halaman",
-        "Desain logo premium",
-        "Paket 1000 followers/likes",
-        "Editing video profesional",
-        "Social media setup",
-        "Revisi 5x"
+        "Desain logo/poster unik",
+        "Editing video dengan efek khusus",
+        "Website dinamis",
+        "Peningkatan followers signifikan",
+        "Pelaporan akun media sosial",
+        "Revisi sesuai kebutuhan"
       ],
       highlight: true,
     },
     {
-      name: "Enterprise",
-      price: "Mulai Rp 800K",
+      name: "Paket Premium",
+      price: "Rp 350K - 650K",
       features: [
-        "Website lengkap & responsif",
-        "Branding kit lengkap",
-        "Social media management",
-        "Video editing premium",
-        "SEO dasar",
+        "Website E-commerce",
+        "Editing film pendek/iklan",
+        "Perencanaan branding",
+        "Peningkatan pengikut organik",
+        "Penghapusan akun bermasalah",
         "Revisi tak terbatas",
         "Support 30 hari"
       ],
@@ -89,39 +94,41 @@ const pricingData = {
   ],
   "Jasa Pembelajaran": [
     {
-      name: "Intro",
-      price: "Mulai Rp 75K",
+      name: "Sesi Individual",
+      price: "Rp 50K - 150K/sesi",
       features: [
-        "1 sesi konsultasi (1 jam)",
-        "Basic skill learning",
-        "Materi pembelajaran dasar",
-        "Akses komunitas basic"
+        "Pembelajaran privat",
+        "Fokus pada topik tertentu",
+        "Sesi tanya jawab",
+        "Latihan praktis",
+        "Pembelajaran dasar",
+        "Materi pembelajaran dasar"
       ],
       highlight: false,
     },
     {
-      name: "Advanced",
-      price: "Mulai Rp 200K",
+      name: "Paket Dasar",
+      price: "Rp 150K - 200K",
       features: [
-        "3 sesi pelatihan (1 jam)",
-        "Advanced skill learning",
-        "Materi lengkap & latihan",
-        "Project sederhana",
-        "Akses komunitas penuh",
+        "Kursus singkat",
+        "Materi dasar dan latihan",
+        "Akses materi pembelajaran",
+        "Pembelajaran tingkat menengah",
+        "Bimbingan terstruktur",
         "Sertifikat digital"
       ],
       highlight: true,
     },
     {
-      name: "Mastery",
-      price: "Mulai Rp 500K",
+      name: "Paket Lanjutan",
+      price: "Rp 200K - 300K+",
       features: [
-        "10 sesi pelatihan (1 jam)",
-        "Expert level skill",
-        "Materi premium & project",
-        "Portfolio-ready project",
-        "Bimbingan personal",
-        "Akses seumur hidup",
+        "Kursus intensif",
+        "Materi mendalam",
+        "Proyek praktik",
+        "Mentoring berkelanjutan",
+        "Pembelajaran tingkat lanjut",
+        "Modul disesuaikan kebutuhan",
         "Sertifikat resmi"
       ],
       highlight: false,
@@ -219,6 +226,15 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
+                
+                <div className="text-xs text-gray-400 mb-6">
+                  {activeCategory === "Jasa Tugas" && 
+                    "Harga bervariasi berdasarkan tingkat kesulitan, panjang tugas, dan tenggat waktu."}
+                  {activeCategory === "Jasa Digital" && 
+                    "Harga tergantung pada kompleksitas desain, durasi video, atau jumlah followers yang diinginkan."}
+                  {activeCategory === "Jasa Pembelajaran" && 
+                    "Harga bervariasi tergantung pada durasi kursus, tingkat kesulitan materi, dan jumlah sesi."}
+                </div>
                 
                 <CTAButton 
                   href="/order" 
