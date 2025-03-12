@@ -1,13 +1,30 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useEffect } from 'react';
+import PageTransition from '@/components/PageTransition';
+import Hero from '@/components/Hero';
+import ServiceSection from '@/components/ServiceSection';
+import PricingSection from '@/components/PricingSection';
+import TestimonialSection from '@/components/TestimonialSection';
+import ContactSection from '@/components/ContactSection';
+import Footer from '@/components/Footer';
 
 const Index = () => {
+  useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <PageTransition>
+      <main className="min-h-screen bg-cyber-black">
+        <Hero />
+        <ServiceSection />
+        <PricingSection />
+        <TestimonialSection />
+        <ContactSection />
+        <Footer />
+      </main>
+    </PageTransition>
   );
 };
 
