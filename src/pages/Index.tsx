@@ -1,6 +1,7 @@
 
 import { useEffect } from 'react';
 import PageTransition from '@/components/PageTransition';
+import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import ServiceSection from '@/components/ServiceSection';
 import PricingSection from '@/components/PricingSection';
@@ -16,6 +17,7 @@ const Index = () => {
 
   return (
     <PageTransition>
+      <Navbar />
       <main className="min-h-screen bg-cyber-black">
         <Hero />
         <ServiceSection />

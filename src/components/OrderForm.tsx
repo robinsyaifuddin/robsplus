@@ -1,283 +1,241 @@
 
-import { useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Send, CheckCircle } from 'lucide-react';
-import CTAButton from './CTAButton';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { motion } from 'framer-motion';
+import { ArrowRight, Check } from 'lucide-react';
+import { 
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import CTAButton from '@/components/CTAButton';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-const serviceTypes = {
-  "Jasa Tugas": [
-    "KTI",
-    "Makalah",
-    "Essay",
-    "Laporan",
-    "Proposal",
-    "Jurnal",
-    "PPT",
-    "Parafrase/Turunkan Plagiasi",
-    "Lainnya"
-  ],
-  "Jasa Digital": [
-    "Pembuatan Website",
-    "Desain Logo",
-    "Desain Poster",
-    "Editing Video/Film",
-    "Followers, Likes, Comment Sosmed",
-    "Report/Hapus Akun Sosmed",
-    "Lainnya"
-  ],
-  "Jasa Pembelajaran": [
-    "Website",
-    "Desain Grafis",
-    "Digital Marketing",
-    "Instagram Branding",
-    "Ms. Word",
-    "Power Point",
-    "Excel",
-    "Lainnya"
-  ]
-};
+// Define form schema with Zod
+const orderFormSchema = z.object({
+  name: z.string().min(2, { message: 'Nama harus minimal 2 karakter' }),
+  email: z.string().email({ message: 'Email tidak valid' }),
+  whatsapp: z.string().min(10, { message: 'Nomor WhatsApp tidak valid' }),
+  serviceType: z.string().min(1, { message: 'Pilih jenis layanan' }),
+  serviceDetail: z.string().optional(),
+  projectDetails: z.string().min(10, { message: 'Detail proyek harus minimal 10 karakter' }),
+});
+
+type OrderFormValues = z.infer<typeof orderFormSchema>;
 
 const OrderForm = () => {
-  const [formState, setFormState] = useState({
-    name: '',
-    phone: '',
-    serviceCategory: 'Jasa Tugas',
-    serviceType: '',
-    deadline: '',
-    description: '',
+  const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
+  
+  // Define the form
+  const form = useForm<OrderFormValues>({
+    resolver: zodResolver(orderFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      whatsapp: '',
+      serviceType: '',
+      serviceDetail: '',
+      projectDetails: '',
+    }
   });
   
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormState(prev => ({ ...prev, [name]: value }));
+  // Handle form submission
+  const onSubmit = (data: OrderFormValues) => {
+    // Create WhatsApp message
+    const message = encodeURIComponent(
+      `Halo, saya ingin memesan layanan ROB'sPlus:\n\nNama: ${data.name}\nEmail: ${data.email}\nNomor WhatsApp: ${data.whatsapp}\nJenis Layanan: ${data.serviceType}${data.serviceDetail ? ' - ' + data.serviceDetail : ''}\nDetail Tugas/Proyek: ${data.projectDetails}`
+    );
     
-    // Clear error when field is edited
-    if (errors[name]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
+    // Set success state (for the success animation)
+    setIsSubmitSuccess(true);
     
-    // Reset serviceType when serviceCategory changes
-    if (name === 'serviceCategory') {
-      setFormState(prev => ({ ...prev, serviceType: '' }));
-    }
+    // Redirect to WhatsApp
+    setTimeout(() => {
+      window.open(`https://wa.me/6282279722417?text=${message}`, '_blank');
+      
+      // Reset form after submission
+      form.reset();
+      setIsSubmitSuccess(false);
+    }, 1500);
   };
   
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formState.name.trim()) {
-      newErrors.name = 'Nama harus diisi';
-    }
-    
-    if (!formState.phone.trim()) {
-      newErrors.phone = 'No. Whatsapp harus diisi';
-    } else if (!/^[0-9+]+$/.test(formState.phone)) {
-      newErrors.phone = 'Format No. Whatsapp tidak valid';
-    }
-    
-    if (!formState.serviceType) {
-      newErrors.serviceType = 'Jenis layanan harus dipilih';
-    }
-    
-    if (!formState.deadline) {
-      newErrors.deadline = 'Deadline harus diisi';
-    }
-    
-    if (!formState.description.trim()) {
-      newErrors.description = 'Deskripsi harus diisi';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  // Show different service detail options based on service type
+  const serviceTypeOptions = {
+    'Jasa Tugas': ['KTI', 'Makalah', 'Essay', 'Laporan', 'Proposal', 'Jurnal', 'PPT', 'Parafrase/Turunkan Plagiasi'],
+    'Jasa Digital': ['Pembuatan Website', 'Desain Logo/Poster', 'Editing Video/Film', 'Followers/Likes/Comment Sosmed', 'Report/Hapus Akun Sosmed'],
+    'Jasa Pembelajaran': ['Website', 'Desain Grafis', 'Digital Marketing', 'Instagram Branding', 'Ms. Word, Power Point, Excel'],
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    // Format the WhatsApp message
-    const message = `Halo ROB'sPlus, saya ingin order jasa:
-    
-*Nama:* ${formState.name}
-*Kategori:* ${formState.serviceCategory}
-*Jenis Layanan:* ${formState.serviceType}
-*Deadline:* ${formState.deadline}
-*Deskripsi:* ${formState.description}
-
-Mohon informasi lebih lanjut. Terima kasih!`;
-    
-    // Encode the message for WhatsApp URL
-    const encodedMessage = encodeURIComponent(message);
-    
-    // Create WhatsApp URL
-    const whatsappUrl = `https://wa.me/6282279722417?text=${encodedMessage}`;
-    
-    // Open WhatsApp in new tab
-    window.open(whatsappUrl, '_blank');
-  };
-  
-  const inputClasses = "w-full px-4 py-3 bg-cyber-deepBlue/50 border border-cyber-purple/20 rounded-md focus:border-cyber-lightBlue focus:ring-1 focus:ring-cyber-lightBlue text-white";
-  const labelClasses = "block text-sm font-medium text-gray-300 mb-1";
-  const errorClasses = "text-sm text-red-400 mt-1";
+  const selectedServiceType = form.watch('serviceType') as keyof typeof serviceTypeOptions;
   
   return (
-    <section className="py-24 px-6 relative overflow-hidden" id="order" ref={ref}>
-      <div className="absolute inset-0 bg-cyber-black/80 cyber-grid-bg -z-10"></div>
-      
-      <div className="container mx-auto">
-        <motion.div 
-          className="text-center max-w-xl mx-auto mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-cyber-purple/20 text-cyber-lightBlue border border-cyber-purple/30 mb-4">
-            Order Sekarang
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Mulai <span className="bg-gradient-to-r from-cyber-purple to-cyber-lightBlue bg-clip-text text-transparent">Pesanan Anda</span> Sekarang
-          </h2>
-          <p className="text-gray-300">
-            Isi formulir di bawah untuk memulai pesanan Anda. Tim kami akan segera menghubungi Anda melalui WhatsApp.
-          </p>
-        </motion.div>
-        
-        <div className="max-w-4xl mx-auto">
-          <motion.div 
-            className="glassmorphism rounded-lg p-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className={labelClasses}>Nama Lengkap</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Masukkan nama lengkap"
-                    className={cn(inputClasses, errors.name && "border-red-500")}
-                    value={formState.name}
-                    onChange={handleChange}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-200">Nama</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Nama lengkap Anda" 
+                    className="bg-cyber-deepBlue/50 border-cyber-purple/30 text-white placeholder:text-gray-500" 
+                    {...field} 
                   />
-                  {errors.name && <p className={errorClasses}>{errors.name}</p>}
-                </div>
-                
-                <div>
-                  <label htmlFor="phone" className={labelClasses}>No. WhatsApp</label>
-                  <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    placeholder="Contoh: 08123456789"
-                    className={cn(inputClasses, errors.phone && "border-red-500")}
-                    value={formState.phone}
-                    onChange={handleChange}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-200">Email</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="alamat@email.com" 
+                    className="bg-cyber-deepBlue/50 border-cyber-purple/30 text-white placeholder:text-gray-500" 
+                    {...field} 
                   />
-                  {errors.phone && <p className={errorClasses}>{errors.phone}</p>}
-                </div>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="serviceCategory" className={labelClasses}>Kategori Layanan</label>
-                  <select
-                    id="serviceCategory"
-                    name="serviceCategory"
-                    className={inputClasses}
-                    value={formState.serviceCategory}
-                    onChange={handleChange}
-                  >
-                    {Object.keys(serviceTypes).map((category) => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div>
-                  <label htmlFor="serviceType" className={labelClasses}>Jenis Layanan</label>
-                  <select
-                    id="serviceType"
-                    name="serviceType"
-                    className={cn(inputClasses, errors.serviceType && "border-red-500")}
-                    value={formState.serviceType}
-                    onChange={handleChange}
-                  >
-                    <option value="">Pilih Jenis Layanan</option>
-                    {serviceTypes[formState.serviceCategory as keyof typeof serviceTypes].map((type) => (
-                      <option key={type} value={type}>{type}</option>
-                    ))}
-                  </select>
-                  {errors.serviceType && <p className={errorClasses}>{errors.serviceType}</p>}
-                </div>
-              </div>
-              
-              <div>
-                <label htmlFor="deadline" className={labelClasses}>Deadline</label>
-                <input
-                  type="text"
-                  id="deadline"
-                  name="deadline"
-                  placeholder="Contoh: 3 hari, 1 minggu, 30 November 2024"
-                  className={cn(inputClasses, errors.deadline && "border-red-500")}
-                  value={formState.deadline}
-                  onChange={handleChange}
-                />
-                {errors.deadline && <p className={errorClasses}>{errors.deadline}</p>}
-              </div>
-              
-              <div>
-                <label htmlFor="description" className={labelClasses}>Deskripsi Pesanan</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={4}
-                  placeholder="Jelaskan detail pesanan Anda..."
-                  className={cn(inputClasses, errors.description && "border-red-500")}
-                  value={formState.description}
-                  onChange={handleChange}
-                />
-                {errors.description && <p className={errorClasses}>{errors.description}</p>}
-              </div>
-              
-              <motion.div 
-                className="flex justify-center mt-8"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <CTAButton
-                  type="submit"
-                  size="lg"
-                  className="w-full md:w-auto px-8 justify-center"
-                  icon={<Send size={18} />}
-                >
-                  Kirim Permintaan
-                </CTAButton>
-              </motion.div>
-              
-              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-400">
-                <CheckCircle size={16} className="text-cyber-lightBlue" />
-                <p>Data Anda aman dan hanya digunakan untuk keperluan pemesanan.</p>
-              </div>
-            </form>
-          </motion.div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-      </div>
-    </section>
+        
+        <FormField
+          control={form.control}
+          name="whatsapp"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-200">Nomor WhatsApp</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Contoh: 082279722417" 
+                  className="bg-cyber-deepBlue/50 border-cyber-purple/30 text-white placeholder:text-gray-500" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="serviceType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-200">Jenis Layanan</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="bg-cyber-deepBlue/50 border-cyber-purple/30 text-white">
+                      <SelectValue placeholder="Pilih jenis layanan" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-cyber-deepBlue border-cyber-purple/30">
+                    {Object.keys(serviceTypeOptions).map((option) => (
+                      <SelectItem key={option} value={option} className="text-white hover:bg-cyber-purple/20">
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          {selectedServiceType && (
+            <FormField
+              control={form.control}
+              name="serviceDetail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-200">Detail Layanan</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="bg-cyber-deepBlue/50 border-cyber-purple/30 text-white">
+                        <SelectValue placeholder="Pilih detail layanan" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-cyber-deepBlue border-cyber-purple/30">
+                      {serviceTypeOptions[selectedServiceType]?.map((option) => (
+                        <SelectItem key={option} value={option} className="text-white hover:bg-cyber-purple/20">
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
+        
+        <FormField
+          control={form.control}
+          name="projectDetails"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-200">Detail Tugas/Proyek</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="Jelaskan detail tugas atau proyek yang Anda inginkan" 
+                  className="bg-cyber-deepBlue/50 border-cyber-purple/30 text-white placeholder:text-gray-500 min-h-32" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <div className="pt-4">
+          {isSubmitSuccess ? (
+            <motion.div
+              className="flex items-center justify-center p-2 bg-green-500/20 rounded-md border border-green-500/30"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Check className="mr-2 text-green-500" size={18} />
+              <span className="text-green-500">Berhasil! Mengarahkan ke WhatsApp...</span>
+            </motion.div>
+          ) : (
+            <CTAButton
+              href="#"
+              size="lg"
+              className="w-full justify-center"
+              icon={<ArrowRight size={18} />}
+              onClick={() => form.handleSubmit(onSubmit)()}
+            >
+              Kirim Permintaan
+            </CTAButton>
+          )}
+        </div>
+      </form>
+    </Form>
   );
 };
 

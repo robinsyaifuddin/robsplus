@@ -3,22 +3,14 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import CTAButton from './CTAButton';
-
-const navLinks = [
-  { name: 'Beranda', path: '/' },
-  { name: 'Layanan', path: '/services' },
-  { name: 'Harga', path: '/pricing' },
-  { name: 'Testimoni', path: '/testimonials' },
-  { name: 'Order Jasa', path: '/order' },
-];
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   
+  // Listen for scroll events
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -28,160 +20,100 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
+  // Close menu when route changes
   useEffect(() => {
-    // Close mobile menu when route changes
-    setIsMobileMenuOpen(false);
-  }, [location]);
+    setIsMenuOpen(false);
+  }, [location.pathname]);
   
-  const navbarClasses = cn(
-    "fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300",
-    {
-      "bg-transparent": !isScrolled && !isMobileMenuOpen,
-      "glassmorphism shadow-md": isScrolled || isMobileMenuOpen
-    }
-  );
+  const navLinks = [
+    { text: 'Beranda', href: '/' },
+    { text: 'Layanan', href: '/services' },
+    { text: 'Harga', href: '/#pricing' },
+    { text: 'Testimoni', href: '/#testimonials' }
+  ];
   
   return (
-    <nav className={navbarClasses}>
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-2">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+    <header 
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled ? 'py-2 glassmorphism shadow-cyber' : 'py-4 bg-transparent'
+      }`}
+    >
+      <div className="container mx-auto px-6">
+        <nav className="flex items-center justify-between">
+          {/* Logo */}
+          <Link 
+            to="/" 
+            className="text-xl font-bold cyber-text-glow-purple tracking-wider"
           >
-            <span className="text-2xl font-bold bg-gradient-to-r from-cyber-neonPurple to-cyber-lightBlue bg-clip-text text-transparent">
-              ROB's<span className="text-white">Plus</span>
-            </span>
-          </motion.div>
-        </Link>
-        
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
-          <ul className="flex gap-6">
-            {navLinks.map((link) => (
-              <motion.li 
-                key={link.name}
-                whileHover={{ y: -2 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Link 
-                  to={link.path}
-                  className={cn(
-                    "text-sm font-medium relative",
-                    {
-                      "text-white": location.pathname === link.path,
-                      "text-gray-300 hover:text-white": location.pathname !== link.path
-                    }
-                  )}
-                >
-                  {link.name}
-                  {location.pathname === link.path && (
-                    <motion.span
-                      layoutId="navbar-indicator"
-                      className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-cyber-lightBlue"
-                      initial={{ width: 0 }}
-                      animate={{ width: '100%' }}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              </motion.li>
-            ))}
-          </ul>
-          <CTAButton 
-            href="https://wa.me/6282279722417?text=Halo%20ROB'sPlus,%20saya%20ingin%20konsultasi%20layanan%20gratis."
-            size="sm"
-            variant="secondary"
+            ROB's<span className="text-cyber-lightBlue">Plus</span>
+          </Link>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <ul className="flex space-x-6">
+              {navLinks.map((link) => (
+                <li key={link.text}>
+                  <Link 
+                    to={link.href} 
+                    className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                      location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                    }`}
+                  >
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            
+            <CTAButton href="/order" size="sm">
+              Order Jasa
+            </CTAButton>
+          </div>
+          
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden text-white"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
-            Konsultasi Gratis
-          </CTAButton>
-        </div>
-        
-        {/* Mobile Menu Toggle */}
-        <button 
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-          className="md:hidden text-white p-2"
-          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-        >
-          <AnimatePresence mode="wait">
-            {isMobileMenuOpen ? (
-              <motion.div
-                key="close"
-                initial={{ opacity: 0, rotate: -90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: 90 }}
-                transition={{ duration: 0.2 }}
-              >
-                <X size={24} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="menu"
-                initial={{ opacity: 0, rotate: 90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: -90 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Menu size={24} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </button>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </nav>
       </div>
       
-      {/* Mobile Navigation */}
+      {/* Mobile Menu */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="container mx-auto md:hidden py-4"
+        {isMenuOpen && (
+          <motion.div 
+            className="md:hidden glassmorphism absolute left-0 right-0 px-6 py-4 shadow-cyber"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
           >
-            <ul className="flex flex-col gap-4 pb-4">
-              {navLinks.map((link, index) => (
-                <motion.li 
-                  key={link.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
+            <ul className="flex flex-col space-y-4">
+              {navLinks.map((link) => (
+                <li key={link.text}>
                   <Link 
-                    to={link.path}
-                    className={cn(
-                      "block py-2 px-4 rounded-md transition-colors",
-                      {
-                        "bg-cyber-deepBlue text-cyber-lightBlue": location.pathname === link.path,
-                        "text-gray-300 hover:bg-cyber-deepBlue/50 hover:text-white": location.pathname !== link.path
-                      }
-                    )}
+                    to={link.href} 
+                    className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                      location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                    }`}
                   >
-                    {link.name}
+                    {link.text}
                   </Link>
-                </motion.li>
+                </li>
               ))}
-              <motion.li
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: navLinks.length * 0.1 }}
-                className="mt-2"
-              >
-                <CTAButton 
-                  href="https://wa.me/6282279722417?text=Halo%20ROB'sPlus,%20saya%20ingin%20konsultasi%20layanan%20gratis."
-                  size="sm"
-                  variant="secondary"
-                  className="w-full justify-center"
-                >
-                  Konsultasi Gratis
+              <li>
+                <CTAButton href="/order" size="sm" className="w-full justify-center">
+                  Order Jasa
                 </CTAButton>
-              </motion.li>
+              </li>
             </ul>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </header>
   );
 };
 
