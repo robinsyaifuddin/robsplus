@@ -1,7 +1,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Phone, Mail, Instagram } from 'lucide-react';
 import CTAButton from './CTAButton';
 
 const ContactSection = () => {
@@ -18,20 +18,14 @@ const ContactSection = () => {
     {
       icon: <Mail className="text-cyber-lightBlue" size={24} />,
       title: "Email",
-      content: "contact@robsplus.com",
-      href: "mailto:contact@robsplus.com",
+      content: "hello.robplus@gmail.com",
+      href: "mailto:hello.robplus@gmail.com",
     },
     {
-      icon: <MapPin className="text-cyber-lightBlue" size={24} />,
-      title: "Lokasi",
-      content: "Jl. Cyber, Kota Digital, Indonesia",
-      href: "#",
-    },
-    {
-      icon: <Clock className="text-cyber-lightBlue" size={24} />,
-      title: "Jam Operasional",
-      content: "Senin - Minggu: 08:00 - 21:00",
-      href: "#",
+      icon: <Instagram className="text-cyber-lightBlue" size={24} />,
+      title: "Instagram",
+      content: "ofc.robplus",
+      href: "https://instagram.com/ofc.robplus",
     },
   ];
   
@@ -57,20 +51,20 @@ const ContactSection = () => {
           </p>
         </motion.div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {contactItems.map((item, index) => (
             <motion.a
               key={index}
               href={item.href}
-              target={item.href.startsWith("http") ? "_blank" : "_self"}
+              target="_blank"
               rel="noopener noreferrer"
               className="glassmorphism rounded-lg p-6 flex flex-col items-center justify-center text-center h-full hover:bg-cyber-deepBlue/70 transition-colors"
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.5, delay: 0.1 * index }}
-              whileHover={{ y: -5 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(121,33,223,0.3)" }}
             >
-              <div className="w-12 h-12 rounded-full bg-cyber-deepBlue/70 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-cyber-deepBlue/70 flex items-center justify-center mb-4 border border-cyber-purple/20">
                 {item.icon}
               </div>
               <h3 className="font-medium mb-2">{item.title}</h3>

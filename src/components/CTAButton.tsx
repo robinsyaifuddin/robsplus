@@ -10,6 +10,7 @@ interface CTAButtonProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   icon?: React.ReactNode;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const CTAButton = ({
@@ -20,6 +21,7 @@ const CTAButton = ({
   size = 'md',
   className,
   icon,
+  type = 'button',
 }: CTAButtonProps) => {
   const baseClasses = "relative font-medium tracking-wide inline-flex items-center justify-center gap-2 rounded-md transition-all duration-300 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-lightBlue focus-visible:ring-opacity-50";
   
@@ -72,7 +74,8 @@ const CTAButton = ({
   
   return (
     <motion.button 
-      onClick={onClick} 
+      onClick={onClick}
+      type={type}
       className={classes}
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.98 }}

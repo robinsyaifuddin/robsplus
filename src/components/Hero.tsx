@@ -51,14 +51,6 @@ const Hero = () => {
         >
           <motion.div variants={itemVariants} className="flex flex-col gap-6">
             <div>
-              <motion.span 
-                className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-cyber-purple/20 text-cyber-lightBlue border border-cyber-purple/30 mb-4"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                ROB'sPlus Cyber Assist
-              </motion.span>
               <motion.h1 
                 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
                 variants={itemVariants}

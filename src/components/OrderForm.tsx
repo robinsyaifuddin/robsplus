@@ -53,17 +53,17 @@ const OrderForm = () => {
       `Halo, saya ingin memesan layanan ROB'sPlus:\n\nNama: ${data.name}\nEmail: ${data.email}\nNomor WhatsApp: ${data.whatsapp}\nJenis Layanan: ${data.serviceType}${data.serviceDetail ? ' - ' + data.serviceDetail : ''}\nDetail Tugas/Proyek: ${data.projectDetails}`
     );
     
-    // Set success state (for the success animation)
+    // Set success state for the success animation
     setIsSubmitSuccess(true);
     
-    // Redirect to WhatsApp
+    // Redirect to WhatsApp after short delay
     setTimeout(() => {
       window.open(`https://wa.me/6282279722417?text=${message}`, '_blank');
       
       // Reset form after submission
       form.reset();
       setIsSubmitSuccess(false);
-    }, 1500);
+    }, 1000);
   };
   
   // Show different service detail options based on service type
@@ -224,11 +224,10 @@ const OrderForm = () => {
             </motion.div>
           ) : (
             <CTAButton
-              href="#"
+              type="submit"
               size="lg"
               className="w-full justify-center"
               icon={<ArrowRight size={18} />}
-              onClick={() => form.handleSubmit(onSubmit)()}
             >
               Kirim Permintaan
             </CTAButton>

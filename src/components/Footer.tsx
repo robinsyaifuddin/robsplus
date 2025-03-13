@@ -1,7 +1,7 @@
 
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone } from 'lucide-react';
+import { Instagram, Mail, Phone } from 'lucide-react';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -27,16 +27,16 @@ const Footer = () => {
       title: "Kontak",
       links: [
         { name: "WhatsApp: +62 822-7972-2417", path: "https://wa.me/6282279722417" },
-        { name: "Email: contact@robsplus.com", path: "mailto:contact@robsplus.com" },
+        { name: "Email: hello.robplus@gmail.com", path: "mailto:hello.robplus@gmail.com" },
+        { name: "Instagram: ofc.robplus", path: "https://instagram.com/ofc.robplus" },
       ]
     }
   ];
   
   const socialLinks = [
-    { icon: <Facebook size={18} />, url: "#" },
-    { icon: <Instagram size={18} />, url: "#" },
-    { icon: <Twitter size={18} />, url: "#" },
-    { icon: <Linkedin size={18} />, url: "#" },
+    { icon: <Instagram size={18} />, url: "https://instagram.com/ofc.robplus" },
+    { icon: <Phone size={18} />, url: "https://wa.me/6282279722417" },
+    { icon: <Mail size={18} />, url: "mailto:hello.robplus@gmail.com" },
   ];
   
   return (
@@ -61,6 +61,8 @@ const Footer = () => {
                 <motion.a
                   key={index}
                   href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-8 h-8 rounded-full bg-cyber-deepBlue/70 border border-cyber-purple/30 flex items-center justify-center text-cyber-lightBlue hover:bg-cyber-purple/20 transition-colors"
                   whileHover={{ y: -3 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -80,6 +82,8 @@ const Footer = () => {
                     <a 
                       href={link.path} 
                       className="text-gray-400 hover:text-cyber-lightBlue text-sm transition-colors"
+                      target={link.path.startsWith("http") ? "_blank" : ""}
+                      rel="noopener noreferrer"
                     >
                       {link.name}
                     </a>
