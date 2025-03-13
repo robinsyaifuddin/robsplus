@@ -3,7 +3,7 @@ export const pricingData = {
   "Jasa Tugas": [
     {
       name: "Paket Dasar",
-      price: "Rp 50K - 150K",
+      price: "Rp 5K - 50K",
       features: [
         "Esai pendek",
         "Laporan sederhana",
@@ -17,7 +17,7 @@ export const pricingData = {
     },
     {
       name: "Paket Menengah",
-      price: "Rp 150K - 250K",
+      price: "Rp 50K - 150K",
       features: [
         "Makalah kompleks",
         "Proposal",
@@ -31,7 +31,7 @@ export const pricingData = {
     },
     {
       name: "Paket Lanjutan",
-      price: "Rp 250K - 500K+",
+      price: "Rp 150K - 350K+",
       features: [
         "KTI lengkap",
         "Jurnal",
@@ -47,7 +47,7 @@ export const pricingData = {
   "Jasa Digital": [
     {
       name: "Paket Pemula",
-      price: "Rp 50K - 100K",
+      price: "Rp 50K - 150K",
       features: [
         "Desain logo sederhana",
         "Poster promosi dasar",
@@ -60,7 +60,7 @@ export const pricingData = {
     },
     {
       name: "Paket Profesional",
-      price: "Rp 100K - 350K",
+      price: "Rp 150K - 400K",
       features: [
         "Desain logo/poster unik",
         "Editing video dengan efek khusus",
@@ -73,7 +73,7 @@ export const pricingData = {
     },
     {
       name: "Paket Premium",
-      price: "Rp 350K - 650K",
+      price: "Rp 400K - 700K",
       features: [
         "Website E-commerce",
         "Editing film pendek/iklan",
@@ -89,7 +89,7 @@ export const pricingData = {
   "Jasa Pembelajaran": [
     {
       name: "Sesi Individual",
-      price: "Rp 50K - 150K/sesi",
+      price: "Rp 50K - 100K/sesi",
       features: [
         "Pembelajaran privat",
         "Fokus pada topik tertentu",
@@ -102,7 +102,7 @@ export const pricingData = {
     },
     {
       name: "Paket Dasar",
-      price: "Rp 150K - 200K",
+      price: "Rp 100K - 200K",
       features: [
         "Kursus singkat",
         "Materi dasar dan latihan",
