@@ -131,7 +131,7 @@ const Services = () => {
     <PageTransition>
       <Navbar />
       <main className="min-h-screen bg-cyber-black">
-        <section className="py-24 px-6 relative overflow-hidden">
+        <section className="pt-28 px-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-cyber-gradient -z-10 opacity-30"></div>
           
           <div className="container mx-auto">

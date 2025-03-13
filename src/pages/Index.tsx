@@ -18,7 +18,7 @@ const Index = () => {
   return (
     <PageTransition>
       <Navbar />
-      <main className="min-h-screen bg-cyber-black">
+      <main className="min-h-screen bg-cyber-black pt-24 md:pt-28">
         <Hero />
         <ServiceSection />
         <PricingSection />

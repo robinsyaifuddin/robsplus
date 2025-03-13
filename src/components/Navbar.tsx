@@ -52,7 +52,7 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'py-2 glassmorphism shadow-cyber' : 'py-4 bg-transparent'
+        isScrolled ? 'py-3 glassmorphism shadow-cyber' : 'py-5 bg-transparent'
       }`}
     >
       <div className="container mx-auto px-6">
@@ -60,9 +60,18 @@ const Navbar = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="text-xl font-bold cyber-text-glow-purple tracking-wider"
+            className="flex items-center gap-2"
           >
-            ROB's<span className="text-cyber-lightBlue">Plus</span>
+            <img 
+              src="/lovable-uploads/27477e8d-895e-477f-88b3-9a6354c8a392.png" 
+              alt="ROB's Plus Logo"
+              className={`transition-all duration-300 ${
+                isScrolled ? 'h-10' : 'h-12'
+              }`}
+            />
+            <span className="text-xl font-bold cyber-text-glow-purple tracking-wider">
+              ROB's<span className="text-cyber-lightBlue">Plus</span>
+            </span>
           </Link>
           
           {/* Desktop Navigation */}
