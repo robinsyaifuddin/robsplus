@@ -13,6 +13,18 @@ const Index = () => {
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
+    
+    // Handle direct navigation to hash sections
+    const { hash } = window.location;
+    if (hash) {
+      // Slight delay to ensure all components are rendered
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
   }, []);
 
   return (

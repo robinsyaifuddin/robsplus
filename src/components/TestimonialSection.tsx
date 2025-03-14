@@ -8,35 +8,35 @@ const testimonials = [
     name: "Ahmad Rizky",
     role: "Mahasiswa S1 Teknik",
     image: "/testimonials/testimonial-1.jpg",
-    content: "Saya sangat terbantu dengan jasa tugas ROB'sPlus. Kualitas tulisan sangat baik dan pengerjaan sangat cepat. Nilai saya meningkat berkat bantuan mereka.",
+    content: "ROB'sPlus benar-benar membantu skripsi saya. Hasilnya sangat berkualitas dengan pengerjaan yang tepat waktu. Berkat bantuan mereka, saya berhasil mendapatkan nilai A!",
     rating: 5,
   },
   {
     name: "Siti Rahayu",
     role: "Pengusaha Online Shop",
     image: "/testimonials/testimonial-2.jpg",
-    content: "Website yang dibuat oleh tim ROB'sPlus sangat profesional dan sesuai dengan kebutuhan bisnis saya. Desainnya modern dan responsif. Sangat merekomendasikan!",
+    content: "Website yang dibuat oleh tim ROB'sPlus sangat profesional dan sesuai dengan kebutuhan bisnis saya. Desainnya modern, responsif, dan fiturnya lengkap. Sangat merekomendasikan!",
     rating: 5,
   },
   {
     name: "Budi Santoso",
     role: "Karyawan BUMN",
     image: "/testimonials/testimonial-3.jpg",
-    content: "Kursus digital marketing dari ROB'sPlus membuat saya lebih memahami cara promosi produk secara online. Materinya lengkap dan mudah dipahami.",
-    rating: 4,
+    content: "Kursus digital marketing dari ROB'sPlus membuat saya lebih memahami cara promosi produk secara online. Materinya lengkap dan mentor-mentornya sangat kompeten.",
+    rating: 5,
   },
   {
     name: "Dewi Lestari",
     role: "Mahasiswa S2 Pendidikan",
     image: "/testimonials/testimonial-4.jpg",
-    content: "Jasa pembuatan jurnal ilmiah ROB'sPlus sangat membantu tesis saya. Metodologi penelitian yang disusun sangat terstruktur dan referensinya lengkap.",
+    content: "Jasa pembuatan jurnal ilmiah ROB'sPlus sangat membantu tesis saya. Metodologi penelitian yang disusun sangat terstruktur dan referensinya lengkap. Pelayanan terbaik!",
     rating: 5,
   },
   {
     name: "Rudi Hartono",
     role: "Pegawai Pemerintahan",
     image: "/testimonials/testimonial-5.jpg",
-    content: "Layanan editing video ROB'sPlus sangat memuaskan. Hasilnya profesional dan sesuai dengan konsep yang saya inginkan. Pasti akan menggunakan jasa mereka lagi.",
+    content: "Layanan editing video ROB'sPlus sangat memuaskan. Hasil editingnya profesional dan sesuai dengan konsep yang saya inginkan. Sudah 3 kali pakai jasa mereka dan selalu puas!",
     rating: 5,
   },
   {
@@ -44,7 +44,7 @@ const testimonials = [
     role: "Guru SMA",
     image: "/testimonials/testimonial-6.jpg",
     content: "Kursus Ms. Office dari ROB'sPlus sangat membantu saya menguasai PowerPoint dan Excel. Sekarang saya bisa membuat presentasi yang lebih menarik untuk materi pembelajaran.",
-    rating: 4,
+    rating: 5,
   },
 ];
 
@@ -107,7 +107,7 @@ const TestimonialSection = () => {
             Apa Kata <span className="bg-gradient-to-r from-cyber-purple to-cyber-lightBlue bg-clip-text text-transparent">Klien Kami</span>
           </h2>
           <p className="text-gray-300">
-            Kepuasan klien adalah prioritas utama kami. Berikut adalah beberapa testimonial dari klien yang telah menggunakan layanan ROB'sPlus.
+            Kepuasan klien adalah prioritas utama kami. Berikut adalah testimoni dari beberapa klien yang telah menggunakan layanan ROB'sPlus dan merasakan manfaatnya.
           </p>
         </motion.div>
         

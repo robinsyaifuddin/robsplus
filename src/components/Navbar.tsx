@@ -49,6 +49,31 @@ const Navbar = () => {
     { text: 'Kontak', href: '/#contact' }
   ];
   
+  // Function to check if a hash link is active
+  const isHashActive = (href: string) => {
+    if (!href.startsWith('#')) return false;
+    
+    // Check if we're on homepage and the hash matches
+    if (location.pathname === '/') {
+      return location.hash === href || 
+        // Special case: if no hash but we're at the section in viewport
+        (location.hash === '' && isElementInViewport(document.querySelector(href)));
+    }
+    return false;
+  };
+  
+  // Helper to check if element is in viewport
+  const isElementInViewport = (el: Element | null) => {
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  };
+  
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -83,7 +108,7 @@ const Navbar = () => {
                     <button
                       onClick={() => handleNavigation(link.href)}
                       className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
-                        location.hash === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                        isHashActive(link.href) ? 'text-cyber-lightBlue' : 'text-white'
                       }`}
                     >
                       {link.text}
@@ -145,7 +170,7 @@ const Navbar = () => {
                     <button
                       onClick={() => handleNavigation(link.href)}
                       className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
-                        location.hash === link.href ? 'text-cyber-lightBlue' : 'text-white'
+                        isHashActive(link.href) ? 'text-cyber-lightBlue' : 'text-white'
                       }`}
                     >
                       {link.text}
