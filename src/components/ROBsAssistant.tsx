@@ -1,9 +1,8 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bot, MessageSquare } from 'lucide-react';
 import { Button } from './ui/button';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
 import { 
   Message, 
   initialMessages, 
@@ -19,7 +18,7 @@ const ROBsAssistant = () => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [userInput, setUserInput] = useState("");
   const [showPopover, setShowPopover] = useState(false);
-  const [messageId, setMessageId] = useState(2); // Start from 2 since we have initial message with id 1
+  const [messageId, setMessageId] = useState(2);
   const [isTyping, setIsTyping] = useState(false);
   const [lastInteraction, setLastInteraction] = useState(Date.now());
   
@@ -34,7 +33,6 @@ const ROBsAssistant = () => {
     scrollToBottom();
   }, [messages, isTyping]);
   
-  // Show the assistant bubble after a delay when the page loads
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPopover(true);
@@ -43,7 +41,6 @@ const ROBsAssistant = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  // Reminder to engage if user hasn't interacted for a while
   useEffect(() => {
     if (messages.length <= 1) return;
     
@@ -51,7 +48,7 @@ const ROBsAssistant = () => {
       if (!isOpen && !showAssistantDialog) {
         setShowPopover(true);
       }
-    }, 120000); // 2 minutes of inactivity
+    }, 120000);
     
     return () => clearTimeout(inactivityTimer);
   }, [lastInteraction, isOpen, showAssistantDialog]);
@@ -59,7 +56,6 @@ const ROBsAssistant = () => {
   const simulateTyping = (response: string) => {
     setIsTyping(true);
     
-    // Simulate typing delay based on response length
     const typingDelay = Math.min(Math.max(response.length * 10, 500), 2000);
     
     setTimeout(() => {
@@ -80,7 +76,6 @@ const ROBsAssistant = () => {
     if (userInput.trim() === "") return;
     setLastInteraction(Date.now());
     
-    // Add user message
     const newUserMessage: Message = {
       id: messageId,
       text: userInput,
@@ -91,7 +86,6 @@ const ROBsAssistant = () => {
     setMessageId(prev => prev + 1);
     setUserInput("");
     
-    // Get response based on user input
     const responseText = getResponse(userInput);
     simulateTyping(responseText);
   };
@@ -106,7 +100,6 @@ const ROBsAssistant = () => {
   const handleQuestionClick = (question: string) => {
     setLastInteraction(Date.now());
     
-    // Add the question as if the user asked it
     const newUserMessage: Message = {
       id: messageId,
       text: question,
@@ -116,15 +109,12 @@ const ROBsAssistant = () => {
     setMessages(prev => [...prev, newUserMessage]);
     setMessageId(prev => prev + 1);
     
-    // Find answer in common questions
     const questionObj = commonQuestions.find(q => q.question === question);
     const answer = questionObj ? questionObj.answer : getResponse(question);
     
-    // Simulate bot typing then respond
     simulateTyping(answer);
   };
 
-  // Reset the chat
   const handleResetChat = () => {
     setMessages(initialMessages);
     setMessageId(2);
@@ -134,10 +124,8 @@ const ROBsAssistant = () => {
     });
   };
   
-  // Main Assistant bubble that replaces the Lovable badge
   return (
     <>
-      {/* Assistant Icon Button */}
       <motion.div
         className="fixed bottom-4 right-4 z-50"
         initial={{ opacity: 0, scale: 0.8 }}
@@ -177,7 +165,6 @@ const ROBsAssistant = () => {
             setIsOpen(!isOpen);
             setShowPopover(false);
             setLastInteraction(Date.now());
-            // If on mobile, open the full dialog instead
             if (window.innerWidth < 640 && !isOpen) {
               setShowAssistantDialog(true);
             }
@@ -191,7 +178,6 @@ const ROBsAssistant = () => {
         </motion.button>
       </motion.div>
 
-      {/* Mobile Assistant Dialog */}
       <MobileAssistant 
         showAssistantDialog={showAssistantDialog}
         setShowAssistantDialog={setShowAssistantDialog}
@@ -205,7 +191,6 @@ const ROBsAssistant = () => {
         isTyping={isTyping}
       />
 
-      {/* Desktop Assistant Panel */}
       <AnimatePresence>
         <DesktopAssistant 
           isOpen={isOpen}
