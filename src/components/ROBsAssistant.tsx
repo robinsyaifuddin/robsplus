@@ -5,7 +5,7 @@ import { MessageCircle, Send, X, ChevronDown, Bot, MessageSquareText, Phone } fr
 import { Button } from './ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Badge } from './ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 
 // Common FAQ questions for the assistant
 const commonQuestions = [
@@ -36,8 +36,15 @@ const commonQuestions = [
   },
 ];
 
-// Initial bot greeting messages
-const initialMessages = [
+// Define the Message interface with a strict union type for sender
+interface Message {
+  id: number;
+  text: string;
+  sender: "user" | "bot";  // This is a union type, only "user" or "bot" allowed
+}
+
+// Initial bot greeting messages - properly typed
+const initialMessages: Message[] = [
   {
     id: 1,
     text: "Halo! Saya asisten ROB'sPlus. Ada yang bisa saya bantu?",
@@ -55,12 +62,6 @@ const keywordResponses: { [key: string]: string } = {
   "bayar": "Kami menerima pembayaran melalui transfer bank dan e-wallet (OVO, DANA, GoPay). Detail pembayaran akan diberikan setelah konsultasi dan kesepakatan layanan. Untuk informasi lebih lanjut, silakan hubungi kami via WhatsApp.",
   "revisi": "Kami menyediakan jaminan revisi untuk semua layanan kami. Jumlah revisi bervariasi tergantung paket yang dipilih. Kami berkomitmen untuk memberikan hasil yang memuaskan sesuai kebutuhan Anda.",
 };
-
-interface Message {
-  id: number;
-  text: string;
-  sender: "user" | "bot";
-}
 
 // Get a response based on user input
 const getResponse = (userMessage: string): string => {
@@ -225,6 +226,9 @@ const ROBsAssistant = () => {
               <Bot className="text-cyber-lightBlue" size={18} />
               ROB'sPlus Assistant
             </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Tanyakan apa saja seputar layanan ROB'sPlus
+            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col h-[60vh]">
             <div className="flex-1 overflow-y-auto p-3 space-y-4">
