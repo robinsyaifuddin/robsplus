@@ -1,12 +1,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Bot } from 'lucide-react';
+import { X, Bot, MessageSquare } from 'lucide-react';
 import { Button } from './ui/button';
+import { toast } from './ui/sonner';
 import { 
   Message, 
   initialMessages, 
-  getResponse 
+  getResponse,
+  commonQuestions
 } from './assistant/assistantData';
 import DesktopAssistant from './assistant/DesktopAssistant';
 import MobileAssistant from './assistant/MobileAssistant';
@@ -18,6 +20,8 @@ const ROBsAssistant = () => {
   const [userInput, setUserInput] = useState("");
   const [showPopover, setShowPopover] = useState(false);
   const [messageId, setMessageId] = useState(2); // Start from 2 since we have initial message with id 1
+  const [isTyping, setIsTyping] = useState(false);
+  const [lastInteraction, setLastInteraction] = useState(Date.now());
   
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const inputRef = useRef<null | HTMLInputElement>(null);
@@ -28,7 +32,7 @@ const ROBsAssistant = () => {
   
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
   
   // Show the assistant bubble after a delay when the page loads
   useEffect(() => {
@@ -39,8 +43,42 @@ const ROBsAssistant = () => {
     return () => clearTimeout(timer);
   }, []);
   
+  // Reminder to engage if user hasn't interacted for a while
+  useEffect(() => {
+    if (messages.length <= 1) return;
+    
+    const inactivityTimer = setTimeout(() => {
+      if (!isOpen && !showAssistantDialog) {
+        setShowPopover(true);
+      }
+    }, 120000); // 2 minutes of inactivity
+    
+    return () => clearTimeout(inactivityTimer);
+  }, [lastInteraction, isOpen, showAssistantDialog]);
+  
+  const simulateTyping = (response: string) => {
+    setIsTyping(true);
+    
+    // Simulate typing delay based on response length
+    const typingDelay = Math.min(Math.max(response.length * 10, 500), 2000);
+    
+    setTimeout(() => {
+      setIsTyping(false);
+      
+      const botResponse: Message = {
+        id: messageId + 1,
+        text: response,
+        sender: "bot"
+      };
+      
+      setMessages(prev => [...prev, botResponse]);
+      setMessageId(prev => prev + 2);
+    }, typingDelay);
+  };
+  
   const handleSendMessage = () => {
     if (userInput.trim() === "") return;
+    setLastInteraction(Date.now());
     
     // Add user message
     const newUserMessage: Message = {
@@ -53,60 +91,47 @@ const ROBsAssistant = () => {
     setMessageId(prev => prev + 1);
     setUserInput("");
     
-    // Simulate bot thinking then respond
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: messageId + 1,
-        text: getResponse(userInput),
-        sender: "bot"
-      };
-      
-      setMessages(prev => [...prev, botResponse]);
-      setMessageId(prev => prev + 2);
-    }, 500);
+    // Get response based on user input
+    const responseText = getResponse(userInput);
+    simulateTyping(responseText);
   };
   
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleSendMessage();
     }
   };
   
   const handleQuestionClick = (question: string) => {
-    // Find the question object in common questions
-    import('./assistant/assistantData').then(({ commonQuestions }) => {
-      // Add the question as if the user asked it
-      const newUserMessage: Message = {
-        id: messageId,
-        text: question,
-        sender: "user"
-      };
-      
-      setMessages(prev => [...prev, newUserMessage]);
-      setMessageId(prev => prev + 1);
-      
-      // Find answer in common questions
-      const questionObj = commonQuestions.find(q => q.question === question);
-      const answer = questionObj ? questionObj.answer : getResponse(question);
-      
-      // Simulate bot thinking then respond
-      setTimeout(() => {
-        const botResponse: Message = {
-          id: messageId + 1,
-          text: answer,
-          sender: "bot"
-        };
-        
-        setMessages(prev => [...prev, botResponse]);
-        setMessageId(prev => prev + 2);
-      }, 500);
-    });
+    setLastInteraction(Date.now());
+    
+    // Add the question as if the user asked it
+    const newUserMessage: Message = {
+      id: messageId,
+      text: question,
+      sender: "user"
+    };
+    
+    setMessages(prev => [...prev, newUserMessage]);
+    setMessageId(prev => prev + 1);
+    
+    // Find answer in common questions
+    const questionObj = commonQuestions.find(q => q.question === question);
+    const answer = questionObj ? questionObj.answer : getResponse(question);
+    
+    // Simulate bot typing then respond
+    simulateTyping(answer);
   };
 
   // Reset the chat
   const handleResetChat = () => {
     setMessages(initialMessages);
     setMessageId(2);
+    toast.success("Percakapan baru telah dimulai", {
+      description: "Silakan ajukan pertanyaan Anda",
+      position: "bottom-center"
+    });
   };
   
   // Main Assistant bubble that replaces the Lovable badge
@@ -122,24 +147,36 @@ const ROBsAssistant = () => {
         <AnimatePresence>
           {showPopover && !isOpen && (
             <motion.div 
-              className="absolute bottom-[60px] right-0 bg-cyber-deepBlue p-3 rounded-lg shadow-cyber max-w-[220px] border border-cyber-purple/30"
+              className="absolute bottom-[60px] right-0 bg-cyber-deepBlue/90 p-3 rounded-lg shadow-cyber max-w-[220px] border border-cyber-purple/30 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.9 }}
             >
               <p className="text-sm text-white">
-                Ada yang bisa ROB'sPlus Assistant bantu?
+                {messages.length <= 1 
+                  ? "Ada yang bisa ROB'sPlus Assistant bantu?"
+                  : "Punya pertanyaan lain tentang layanan kami?"}
               </p>
-              <div className="absolute bottom-[-8px] right-5 w-4 h-4 bg-cyber-deepBlue rotate-45 border-r border-b border-cyber-purple/30"></div>
+              <div className="absolute bottom-[-8px] right-5 w-4 h-4 bg-cyber-deepBlue/90 rotate-45 border-r border-b border-cyber-purple/30"></div>
+              <button 
+                onClick={() => setShowPopover(false)}
+                className="absolute top-1 right-1.5 text-gray-400 hover:text-white p-0.5"
+                aria-label="Close"
+              >
+                <X size={12} />
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
         
-        <Button
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-cyber-purple to-cyber-blue shadow-[0_0_15px_rgba(121,33,223,0.6)]"
+        <motion.button
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-cyber-purple to-cyber-blue shadow-[0_0_15px_rgba(121,33,223,0.6)] border border-cyber-purple/30"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => {
             setIsOpen(!isOpen);
             setShowPopover(false);
+            setLastInteraction(Date.now());
             // If on mobile, open the full dialog instead
             if (window.innerWidth < 640 && !isOpen) {
               setShowAssistantDialog(true);
@@ -147,11 +184,11 @@ const ROBsAssistant = () => {
           }}
         >
           {isOpen ? (
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-white" />
           ) : (
-            <Bot className="w-5 h-5" />
+            <MessageSquare className="w-5 h-5 text-white" />
           )}
-        </Button>
+        </motion.button>
       </motion.div>
 
       {/* Mobile Assistant Dialog */}
@@ -165,6 +202,7 @@ const ROBsAssistant = () => {
         handleKeyDown={handleKeyDown}
         handleQuestionClick={handleQuestionClick}
         messagesEndRef={messagesEndRef}
+        isTyping={isTyping}
       />
 
       {/* Desktop Assistant Panel */}
@@ -181,6 +219,7 @@ const ROBsAssistant = () => {
           handleResetChat={handleResetChat}
           messagesEndRef={messagesEndRef}
           inputRef={inputRef}
+          isTyping={isTyping}
         />
       </AnimatePresence>
     </>
