@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Services from "./pages/Services";
 import Order from "./pages/Order";
 import NotFound from "./pages/NotFound";
+import ROBsAssistant from "./components/ROBsAssistant";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ROBsAssistant />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
