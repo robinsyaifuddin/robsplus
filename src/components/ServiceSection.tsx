@@ -1,7 +1,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { FileText, Layout, Paintbrush, GraduationCap } from 'lucide-react';
+import { FileText, Layout, GraduationCap } from 'lucide-react';
 import ServiceCard from './ServiceCard';
 import CTAButton from './CTAButton';
 
@@ -32,21 +32,48 @@ const ServiceSection = () => {
   const services = [
     {
       title: "Jasa Tugas",
-      description: "Pembuatan berbagai macam tugas akademik dengan kualitas terbaik dan orginal.",
+      description: "Layanan pembuatan tugas akademik berkualitas tinggi, original, dan sesuai kebutuhan Anda. Harga mulai dari Rp 5.000.",
       icon: <FileText size={24} />,
-      items: ["KTI", "Makalah", "Essay", "Laporan", "Proposal", "Jurnal", "PPT", "Parafrase/Turunkan Plagiasi"]
+      items: [
+        "KTI (Karya Tulis Ilmiah)", 
+        "Makalah", 
+        "Essay", 
+        "Laporan", 
+        "Proposal", 
+        "Jurnal", 
+        "Presentasi PowerPoint", 
+        "Parafrasa & Turunkan Plagiasi",
+        "Ketik & Format File"
+      ]
     },
     {
       title: "Jasa Digital",
-      description: "Solusi digital untuk meningkatkan bisnis dan brand Anda.",
+      description: "Solusi digital terlengkap untuk kebutuhan personal dan bisnis Anda. Tingkatkan presence online dengan layanan kami mulai dari Rp 25.000.",
       icon: <Layout size={24} />,
-      items: ["Pembuatan Website", "Desain Logo/Poster", "Editing Video/Film", "Followers, Likes, Comment Sosmed", "Report/Hapus Akun Sosmed"]
+      items: [
+        "CV & Surat Lamaran Profesional", 
+        "Undangan Digital", 
+        "Website", 
+        "Desain Grafis", 
+        "Editing Video/Film", 
+        "Tulis & Publikasi Berita", 
+        "Report/Pulihkan Akun", 
+        "Kebutuhan Sosial Media"
+      ]
     },
     {
       title: "Jasa Pembelajaran",
-      description: "Kursus dan pelatihan untuk meningkatkan keterampilan Anda.",
+      description: "Kursus dan pelatihan untuk meningkatkan keterampilan digital Anda. Program pembelajaran yang disesuaikan dengan kebutuhan mulai dari Rp 50.000.",
       icon: <GraduationCap size={24} />,
-      items: ["Website", "Desain Grafis", "Digital Marketing", "Instagram Branding", "Ms. Word, Power Point, Excel"]
+      items: [
+        "Kursus Pribadi", 
+        "Pengembangan Website", 
+        "Desain Grafis", 
+        "Digital Marketing", 
+        "Content/Articles Writing", 
+        "Bot WhatsApp", 
+        "Microsoft Office (Word, PPT, Excel)"
+      ]
     },
   ];
   
@@ -72,7 +99,7 @@ const ServiceSection = () => {
             Solusi <span className="bg-gradient-to-r from-cyber-purple to-cyber-lightBlue bg-clip-text text-transparent">Lengkap</span> Untuk Kebutuhan Anda
           </h2>
           <p className="text-gray-300">
-            Kami menyediakan berbagai jasa profesional untuk memenuhi kebutuhan akademik, digital, dan pembelajaran Anda.
+            Kami menyediakan berbagai jasa profesional untuk memenuhi kebutuhan akademik, digital, dan pembelajaran Anda dengan harga terjangkau.
           </p>
         </motion.div>
         
@@ -100,6 +127,7 @@ const ServiceSection = () => {
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.8 }}
         >
+          <p className="text-gray-300 mb-6">Harga dapat bervariasi tergantung pada detail dan kompleksitas layanan. Layanan lain di luar daftar dapat didiskusikan lebih lanjut.</p>
           <CTAButton 
             href="/order" 
             size="lg"

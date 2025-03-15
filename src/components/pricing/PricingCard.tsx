@@ -1,6 +1,6 @@
 
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CTAButton from '../CTAButton';
 
@@ -19,6 +19,19 @@ interface PricingCardProps {
 }
 
 const PricingCard = ({ plan, index, isInView, activeCategory }: PricingCardProps) => {
+  const getPricingNotes = (category: string) => {
+    switch(category) {
+      case "Jasa Tugas":
+        return "Harga tergantung pada tingkat kesulitan, panjang tugas, dan tenggat waktu.";
+      case "Jasa Digital":
+        return "Harga tergantung pada kompleksitas, fitur, atau format yang diinginkan.";
+      case "Jasa Pembelajaran":
+        return "Harga tergantung pada durasi kursus, tingkat kesulitan, dan jumlah sesi.";
+      default:
+        return "";
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -57,13 +70,9 @@ const PricingCard = ({ plan, index, isInView, activeCategory }: PricingCardProps
           ))}
         </ul>
         
-        <div className="text-xs text-gray-400 mb-6">
-          {activeCategory === "Jasa Tugas" && 
-            "Harga bervariasi berdasarkan tingkat kesulitan, panjang tugas, dan tenggat waktu."}
-          {activeCategory === "Jasa Digital" && 
-            "Harga tergantung pada kompleksitas desain, durasi video, atau jumlah followers yang diinginkan."}
-          {activeCategory === "Jasa Pembelajaran" && 
-            "Harga bervariasi tergantung pada durasi kursus, tingkat kesulitan materi, dan jumlah sesi."}
+        <div className="text-xs text-gray-400 mb-6 flex items-start gap-2">
+          <Info size={14} className="text-cyber-lightBlue mt-0.5 flex-shrink-0" />
+          <span>{getPricingNotes(activeCategory)}</span>
         </div>
         
         <CTAButton 
