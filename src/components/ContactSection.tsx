@@ -1,7 +1,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Phone, Mail, Instagram, MapPin, Clock } from 'lucide-react';
+import { Phone, Mail, Instagram, MapPin, Clock, ExternalLink } from 'lucide-react';
 import CTAButton from './CTAButton';
 
 const ContactSection = () => {
@@ -71,16 +71,19 @@ const ContactSection = () => {
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="glassmorphism rounded-lg p-6 flex flex-col items-center justify-center text-center h-full hover:bg-cyber-deepBlue/70 transition-colors"
+              className="glassmorphism rounded-lg p-6 flex flex-col items-center justify-center text-center h-full hover:bg-cyber-deepBlue/70 transition-colors group"
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.5, delay: 0.1 * index }}
               whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(121,33,223,0.3)" }}
             >
-              <div className="w-12 h-12 rounded-full bg-cyber-deepBlue/70 flex items-center justify-center mb-4 border border-cyber-purple/20">
+              <div className="w-12 h-12 rounded-full bg-cyber-deepBlue/70 flex items-center justify-center mb-4 border border-cyber-purple/20 group-hover:border-cyber-purple/50 transition-colors">
                 {item.icon}
               </div>
-              <h3 className="font-medium mb-2">{item.title}</h3>
+              <h3 className="font-medium mb-2 flex items-center gap-1">
+                {item.title}
+                <ExternalLink size={14} className="text-cyber-purple/70 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </h3>
               <p className="text-gray-300 text-sm">{item.content}</p>
             </motion.a>
           ))}
@@ -90,10 +93,11 @@ const ContactSection = () => {
           {additionalInfo.map((item, index) => (
             <motion.div
               key={index}
-              className="glassmorphism rounded-lg p-6 flex items-center gap-4"
+              className="glassmorphism rounded-lg p-6 flex items-center gap-4 hover:bg-cyber-deepBlue/70 transition-colors"
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.5, delay: 0.5 + (0.1 * index) }}
+              whileHover={{ y: -5 }}
             >
               <div className="w-12 h-12 rounded-full bg-cyber-deepBlue/70 flex-shrink-0 flex items-center justify-center border border-cyber-purple/20">
                 {item.icon}
@@ -116,7 +120,7 @@ const ContactSection = () => {
           <CTAButton 
             href="https://wa.me/6282279722417?text=Halo%20ROB'sPlus,%20saya%20ingin%20konsultasi%20layanan"
             size="lg"
-            className="mx-auto"
+            className="mx-auto hover:scale-105 transition-transform"
           >
             Konsultasi Gratis
           </CTAButton>

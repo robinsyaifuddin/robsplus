@@ -1,7 +1,9 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
+import { Star, Quote, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
+import { ScrollArea } from './ui/scroll-area';
 
 const testimonials = [
   {
@@ -88,6 +90,15 @@ const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] 
 const TestimonialSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const nextTestimonial = () => {
+    setCurrentIndex((prev) => (prev + 3 >= testimonials.length ? 0 : prev + 3));
+  };
+  
+  const prevTestimonial = () => {
+    setCurrentIndex((prev) => (prev - 3 < 0 ? Math.max(0, testimonials.length - 3) : prev - 3));
+  };
   
   return (
     <section className="py-24 px-6 relative overflow-hidden" id="testimonials" ref={ref}>
@@ -111,18 +122,74 @@ const TestimonialSection = () => {
           </p>
         </motion.div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.5, delay: 0.1 * (index % 3) }}
-            >
-              <TestimonialCard testimonial={testimonial} />
-            </motion.div>
-          ))}
+        <div className="hidden md:block">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.5, delay: 0.1 * (index % 3) }}
+              >
+                <TestimonialCard testimonial={testimonial} />
+              </motion.div>
+            ))}
+          </div>
         </div>
+        
+        {/* Mobile testimonial carousel */}
+        <div className="md:hidden">
+          <ScrollArea className="w-full">
+            <div className="flex gap-4 pb-4">
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  className="min-w-[280px]"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                >
+                  <TestimonialCard testimonial={testimonial} />
+                </motion.div>
+              ))}
+            </div>
+          </ScrollArea>
+          
+          <div className="flex justify-center mt-6 gap-2">
+            {Math.ceil(testimonials.length / 3) > 1 && Array.from({ length: Math.ceil(testimonials.length / 3) }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx * 3)}
+                className={`w-2 h-2 rounded-full ${currentIndex / 3 === idx ? 'bg-cyber-lightBlue' : 'bg-gray-500'}`}
+                aria-label={`Go to testimonial group ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+        
+        {/* Testimonial navigation for desktop */}
+        {testimonials.length > 3 && (
+          <div className="hidden lg:flex justify-center mt-12 gap-4">
+            <motion.button
+              onClick={prevTestimonial}
+              className="p-3 rounded-full glassmorphism border border-cyber-purple/20 hover:bg-cyber-purple/20 transition-colors"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Previous testimonials"
+            >
+              <ArrowLeft size={20} className="text-cyber-lightBlue" />
+            </motion.button>
+            <motion.button
+              onClick={nextTestimonial}
+              className="p-3 rounded-full glassmorphism border border-cyber-purple/20 hover:bg-cyber-purple/20 transition-colors"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Next testimonials"
+            >
+              <ArrowRight size={20} className="text-cyber-lightBlue" />
+            </motion.button>
+          </div>
+        )}
       </div>
     </section>
   );

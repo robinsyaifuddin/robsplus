@@ -3,6 +3,7 @@ import { ReactNode, useEffect } from 'react';
 import PageTransition from '@/components/PageTransition';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ScrollToTop from '@/components/ui/scroll-to-top';
 
 interface IndexLayoutProps {
   children: ReactNode;
@@ -33,6 +34,7 @@ const IndexLayout = ({ children }: IndexLayoutProps) => {
         {children}
       </main>
       <Footer />
+      <ScrollToTop />
     </PageTransition>
   );
 };

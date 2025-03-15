@@ -1,11 +1,13 @@
 
 import { useState, useRef } from 'react';
 import { useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import PricingSectionHeader from './pricing/PricingSectionHeader';
 import CategorySelector from './pricing/CategorySelector';
 import PricingCard from './pricing/PricingCard';
 import ConsultationCTA from './pricing/ConsultationCTA';
 import { pricingData } from './pricing/pricingData';
+import { ScrollArea } from './ui/scroll-area';
 
 const PricingSection = () => {
   const [activeCategory, setActiveCategory] = useState("Jasa Tugas");
@@ -28,17 +30,26 @@ const PricingSection = () => {
           isInView={isInView}
         />
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {pricingData[activeCategory as keyof typeof pricingData].map((plan, index) => (
-            <PricingCard 
-              key={plan.name}
-              plan={plan}
-              index={index}
-              isInView={isInView}
-              activeCategory={activeCategory}
-            />
-          ))}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6 }}
+          className="max-h-[600px]"
+        >
+          <ScrollArea className="h-full max-h-[600px] pr-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {pricingData[activeCategory as keyof typeof pricingData].map((plan, index) => (
+                <PricingCard 
+                  key={plan.name}
+                  plan={plan}
+                  index={index}
+                  isInView={isInView}
+                  activeCategory={activeCategory}
+                />
+              ))}
+            </div>
+          </ScrollArea>
+        </motion.div>
         
         <ConsultationCTA isInView={isInView} />
       </div>

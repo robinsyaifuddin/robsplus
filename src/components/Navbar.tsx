@@ -8,12 +8,30 @@ import CTAButton from './CTAButton';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const location = useLocation();
   
   // Listen for scroll events
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+      
+      // Determine which section is currently in view
+      const sections = ['pricing', 'testimonials', 'contact'];
+      
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // If the section is in the viewport (with some buffer for navbar)
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            setActiveSection(section);
+            break;
+          } else {
+            setActiveSection(null);
+          }
+        }
+      }
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -39,6 +57,7 @@ const Navbar = () => {
         window.location.href = '/' + path;
       }
     }
+    setIsMenuOpen(false);
   };
   
   const navLinks = [
@@ -53,25 +72,9 @@ const Navbar = () => {
   const isHashActive = (href: string) => {
     if (!href.startsWith('#')) return false;
     
-    // Check if we're on homepage and the hash matches
-    if (location.pathname === '/') {
-      return location.hash === href || 
-        // Special case: if no hash but we're at the section in viewport
-        (location.hash === '' && isElementInViewport(document.querySelector(href)));
-    }
-    return false;
-  };
-  
-  // Helper to check if element is in viewport
-  const isElementInViewport = (el: Element | null) => {
-    if (!el) return false;
-    const rect = el.getBoundingClientRect();
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
+    const sectionId = href.substring(1);
+    return activeSection === sectionId || 
+      (location.pathname === '/' && location.hash === href);
   };
   
   return (
@@ -107,20 +110,32 @@ const Navbar = () => {
                   {link.href.startsWith('#') ? (
                     <button
                       onClick={() => handleNavigation(link.href)}
-                      className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                      className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue relative ${
                         isHashActive(link.href) ? 'text-cyber-lightBlue' : 'text-white'
                       }`}
                     >
                       {link.text}
+                      {isHashActive(link.href) && (
+                        <motion.span 
+                          className="absolute -bottom-1 left-0 w-full h-0.5 bg-cyber-lightBlue"
+                          layoutId="navIndicator"
+                        />
+                      )}
                     </button>
                   ) : (
                     <Link 
                       to={link.href} 
-                      className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                      className={`text-sm font-medium transition-colors hover:text-cyber-lightBlue relative ${
                         location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
                       }`}
                     >
                       {link.text}
+                      {location.pathname === link.href && (
+                        <motion.span 
+                          className="absolute -bottom-1 left-0 w-full h-0.5 bg-cyber-lightBlue"
+                          layoutId="navIndicator" 
+                        />
+                      )}
                     </Link>
                   )}
                 </li>
@@ -169,20 +184,26 @@ const Navbar = () => {
                   {link.href.startsWith('#') ? (
                     <button
                       onClick={() => handleNavigation(link.href)}
-                      className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                      className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue relative ${
                         isHashActive(link.href) ? 'text-cyber-lightBlue' : 'text-white'
                       }`}
                     >
                       {link.text}
+                      {isHashActive(link.href) && (
+                        <span className="absolute -left-2 top-0 bottom-0 w-0.5 bg-cyber-lightBlue" />
+                      )}
                     </button>
                   ) : (
                     <Link 
                       to={link.href} 
-                      className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue ${
+                      className={`block text-sm font-medium transition-colors hover:text-cyber-lightBlue relative ${
                         location.pathname === link.href ? 'text-cyber-lightBlue' : 'text-white'
                       }`}
                     >
                       {link.text}
+                      {location.pathname === link.href && (
+                        <span className="absolute -left-2 top-0 bottom-0 w-0.5 bg-cyber-lightBlue" />
+                      )}
                     </Link>
                   )}
                 </li>
