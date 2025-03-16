@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, Image, Link } from 'lucide-react';
@@ -109,19 +110,19 @@ const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
   };
 
   const handleEditItem = (item: PortfolioItem) => {
-    setEditDialogOpen(true);
+    setIsEditDialogOpen(true);
     setSelectedItem(item);
   };
 
   const handleDeleteItem = (item: PortfolioItem) => {
-    setDeleteDialogOpen(true);
+    setIsDeleteDialogOpen(true);
     setSelectedItem(item);
   };
 
   const confirmDeleteItem = () => {
     if (selectedItem) {
       setPortfolioItems(portfolioItems.filter((item) => item.id !== selectedItem.id));
-      setDeleteDialogOpen(false);
+      setIsDeleteDialogOpen(false);
       setSelectedItem(null);
     }
   };
@@ -270,7 +271,7 @@ const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
       </Dialog>
 
       {/* Edit Portfolio Item Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="glassmorphism border-cyber-lightBlue/30">
           <DialogHeader>
             <DialogTitle className="text-cyber-neonGreen">Edit Portofolio</DialogTitle>
@@ -348,7 +349,7 @@ const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
             </div>
           )}
           <DialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setEditDialogOpen(false)}>
+            <Button type="button" variant="secondary" onClick={() => setIsEditDialogOpen(false)}>
               Batal
             </Button>
             <Button
@@ -358,7 +359,7 @@ const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
                   setPortfolioItems(
                     portfolioItems.map((item) => (item.id === selectedItem.id ? selectedItem : item))
                   );
-                  setEditDialogOpen(false);
+                  setIsEditDialogOpen(false);
                   setSelectedItem(null);
                 }
               }}
@@ -370,7 +371,7 @@ const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
       </Dialog>
 
       {/* Delete Portfolio Item Dialog */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="glassmorphism border-cyber-lightBlue/30">
           <DialogHeader>
             <DialogTitle className="text-cyber-neonGreen">Hapus Portofolio</DialogTitle>
@@ -379,7 +380,7 @@ const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setDeleteDialogOpen(false)}>
+            <Button type="button" variant="secondary" onClick={() => setIsDeleteDialogOpen(false)}>
               Batal
             </Button>
             <Button type="submit" variant="destructive" onClick={confirmDeleteItem}>
