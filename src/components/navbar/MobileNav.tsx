@@ -7,7 +7,12 @@ import CTAButton from '../CTAButton';
 
 interface MobileNavProps {
   isMenuOpen: boolean;
-  navLinks: Array<{ text: string; href: string }>;
+  navLinks: Array<{ 
+    text: string; 
+    href: string; 
+    isDropdown?: boolean; 
+    dropdownItems?: Array<{ text: string; href: string }>;
+  }>;
   handleNavigation: (path: string) => void;
   isHashActive: (href: string) => boolean;
 }
@@ -33,6 +38,8 @@ const MobileNav = ({ isMenuOpen, navLinks, handleNavigation, isHashActive }: Mob
                 ? isHashActive(link.href) 
                 : location.pathname === link.href}
               onClick={() => link.href.startsWith('#') && handleNavigation(link.href)}
+              isDropdown={link.isDropdown}
+              dropdownItems={link.dropdownItems}
             />
           </li>
         ))}

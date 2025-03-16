@@ -5,7 +5,12 @@ import NavItem from './NavItem';
 import CTAButton from '../CTAButton';
 
 interface DesktopNavProps {
-  navLinks: Array<{ text: string; href: string }>;
+  navLinks: Array<{ 
+    text: string; 
+    href: string; 
+    isDropdown?: boolean; 
+    dropdownItems?: Array<{ text: string; href: string }>;
+  }>;
   activeSection: string | null;
   handleNavigation: (path: string) => void;
   isHashActive: (href: string) => boolean;
@@ -26,6 +31,8 @@ const DesktopNav = ({ navLinks, activeSection, handleNavigation, isHashActive }:
                 ? isHashActive(link.href) 
                 : location.pathname === link.href}
               onClick={() => link.href.startsWith('#') && handleNavigation(link.href)}
+              isDropdown={link.isDropdown}
+              dropdownItems={link.dropdownItems}
             />
           </li>
         ))}
