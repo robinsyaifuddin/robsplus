@@ -805,4 +805,3 @@ const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
 };
 
 export default PortfolioSection;
-
