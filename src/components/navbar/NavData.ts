@@ -12,7 +12,7 @@ export const navLinks = [
     ]
   },
   { text: 'Harga', href: '/#pricing' },
-  { text: 'Testimoni', href: '/#testimonials' },
-  { text: 'Kontak', href: '/#contact' },
+  { text: 'Portofolio', href: '/#portfolio' },
+  { text: 'Tentang Kami', href: '/about' },
   { text: 'Admin', href: '/admin/login', isAdmin: true }
 ];

@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, Eye, ShoppingCart, Users } from 'lucide-react';
+import { BarChart3, Eye, ShoppingCart, Users, Briefcase } from 'lucide-react';
 import AnalyticsSection from '@/components/admin/dashboard/AnalyticsSection';
 import OrdersSection from '@/components/admin/dashboard/OrdersSection';
 import ServicesSection from '@/components/admin/dashboard/ServicesSection';
+import PortfolioSection from '@/components/admin/dashboard/PortfolioSection';
 import { useNavigate } from 'react-router-dom';
 
 // Mock data for stats
@@ -32,15 +33,15 @@ const statsData = [
     description: "saat ini"
   },
   {
-    title: "Layanan Populer",
-    value: "Jasa Tugas",
-    icon: <BarChart3 className="h-4 w-4 text-yellow-500" />,
-    description: "bulan ini"
+    title: "Portofolio",
+    value: "12",
+    icon: <Briefcase className="h-4 w-4 text-yellow-500" />,
+    description: "total entry"
   }
 ];
 
 interface AdminDashboardProps {
-  section?: 'analytics' | 'orders' | 'services';
+  section?: 'analytics' | 'orders' | 'services' | 'portfolio';
 }
 
 const AdminDashboard = ({ section }: AdminDashboardProps) => {
@@ -116,6 +117,9 @@ const AdminDashboard = ({ section }: AdminDashboardProps) => {
           <TabsTrigger value="services" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
             Kelola Layanan
           </TabsTrigger>
+          <TabsTrigger value="portfolio" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
+            Portofolio
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">
@@ -129,7 +133,7 @@ const AdminDashboard = ({ section }: AdminDashboardProps) => {
             <CardContent>
               <p className="text-cyber-lightBlue">
                 Gunakan tab di atas untuk navigasi ke bagian yang berbeda dari dashboard admin.
-                Di sini Anda dapat melihat analisis website, mengelola layanan, dan melihat riwayat order.
+                Di sini Anda dapat melihat analisis website, mengelola layanan, portofolio, dan melihat riwayat order.
               </p>
             </CardContent>
           </Card>
@@ -138,6 +142,11 @@ const AdminDashboard = ({ section }: AdminDashboardProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <AnalyticsSection preview />
             <OrdersSection preview />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ServicesSection preview />
+            <PortfolioSection preview />
           </div>
         </TabsContent>
         
@@ -151,6 +160,10 @@ const AdminDashboard = ({ section }: AdminDashboardProps) => {
         
         <TabsContent value="services">
           <ServicesSection />
+        </TabsContent>
+        
+        <TabsContent value="portfolio">
+          <PortfolioSection />
         </TabsContent>
       </Tabs>
     </div>

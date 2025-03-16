@@ -1,6 +1,6 @@
 
 import { NavLink } from 'react-router-dom';
-import { BarChart3, Home, Settings, ShoppingCart } from 'lucide-react';
+import { BarChart3, Home, Settings, ShoppingCart, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AdminSidebarProps {
@@ -13,6 +13,7 @@ const AdminSidebar = ({ isMobile = false }: AdminSidebarProps) => {
     { icon: BarChart3, label: 'Analisis', path: '/admin/analytics' },
     { icon: ShoppingCart, label: 'Riwayat Order', path: '/admin/orders' },
     { icon: Settings, label: 'Kelola Layanan', path: '/admin/services' },
+    { icon: Briefcase, label: 'Portofolio', path: '/admin/portfolio' },
   ];
 
   return (
