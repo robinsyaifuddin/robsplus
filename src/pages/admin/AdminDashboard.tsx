@@ -8,6 +8,7 @@ import OrdersSection from '@/components/admin/dashboard/OrdersSection';
 import ServicesSection from '@/components/admin/dashboard/ServicesSection';
 import PortfolioSection from '@/components/admin/dashboard/PortfolioSection';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Mock data for stats
 const statsData = [
@@ -47,6 +48,7 @@ interface AdminDashboardProps {
 const AdminDashboard = ({ section }: AdminDashboardProps) => {
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Set active tab based on the route section
   useEffect(() => {
@@ -67,11 +69,11 @@ const AdminDashboard = ({ section }: AdminDashboardProps) => {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-cyber-neonGreen">Dashboard</h1>
+    <div className="space-y-6 p-4">
+      <h1 className="text-2xl md:text-3xl font-bold text-cyber-neonGreen">Dashboard</h1>
       
       {!section && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {statsData.map((stat, index) => (
             <Card key={index} className="glassmorphism border-cyber-lightBlue/30">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -104,23 +106,25 @@ const AdminDashboard = ({ section }: AdminDashboardProps) => {
         onValueChange={handleTabChange}
         className="space-y-4"
       >
-        <TabsList className="bg-cyber-darkBlue/50 border border-cyber-lightBlue/20">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
-            Analisis Website
-          </TabsTrigger>
-          <TabsTrigger value="orders" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
-            Riwayat Order
-          </TabsTrigger>
-          <TabsTrigger value="services" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
-            Kelola Layanan
-          </TabsTrigger>
-          <TabsTrigger value="portfolio" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
-            Portofolio
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2">
+          <TabsList className="bg-cyber-darkBlue/50 border border-cyber-lightBlue/20 flex w-auto">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
+              Analisis Website
+            </TabsTrigger>
+            <TabsTrigger value="orders" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
+              Riwayat Order
+            </TabsTrigger>
+            <TabsTrigger value="services" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
+              Kelola Layanan
+            </TabsTrigger>
+            <TabsTrigger value="portfolio" className="data-[state=active]:bg-cyber-neonGreen data-[state=active]:text-black">
+              Portofolio
+            </TabsTrigger>
+          </TabsList>
+        </div>
         
         <TabsContent value="overview" className="space-y-4">
           <Card className="glassmorphism border-cyber-lightBlue/30">

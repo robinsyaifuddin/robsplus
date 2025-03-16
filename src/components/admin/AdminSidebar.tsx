@@ -18,8 +18,8 @@ const AdminSidebar = ({ isMobile = false }: AdminSidebarProps) => {
 
   return (
     <aside className={cn(
-      "w-64 border-r border-cyber-lightBlue/20 glassmorphism transition-all",
-      isMobile ? "w-full h-full" : "hidden md:block"
+      "border-r border-cyber-lightBlue/20 glassmorphism transition-all h-[calc(100vh-64px)]",
+      isMobile ? "w-full h-full" : "hidden md:block w-64"
     )}>
       <div className="p-6">
         <h2 className="text-lg font-bold text-cyber-neonGreen mb-6">Admin Panel</h2>

@@ -11,9 +11,10 @@ interface NavItemProps {
   onClick?: () => void;
   isDropdown?: boolean;
   dropdownItems?: Array<{ text: string; href: string }>;
+  className?: string;
 }
 
-const NavItem = ({ href, text, isActive, onClick, isDropdown, dropdownItems }: NavItemProps) => {
+const NavItem = ({ href, text, isActive, onClick, isDropdown, dropdownItems, className = "" }: NavItemProps) => {
   const [isHovering, setIsHovering] = useState(false);
   
   if (isDropdown) {
@@ -26,7 +27,7 @@ const NavItem = ({ href, text, isActive, onClick, isDropdown, dropdownItems }: N
         <div 
           className={`flex items-center text-xs font-medium transition-colors hover:text-cyber-lightBlue cursor-pointer ${
             isActive ? 'text-cyber-lightBlue' : 'text-white'
-          }`}
+          } ${className}`}
         >
           <span>{text}</span>
           <ChevronDown size={14} className="ml-1" />
@@ -63,7 +64,7 @@ const NavItem = ({ href, text, isActive, onClick, isDropdown, dropdownItems }: N
         onClick={onClick}
         className={`text-xs font-medium transition-colors hover:text-cyber-lightBlue relative ${
           isActive ? 'text-cyber-lightBlue' : 'text-white'
-        }`}
+        } ${className}`}
       >
         {text}
         {isActive && (
@@ -81,7 +82,7 @@ const NavItem = ({ href, text, isActive, onClick, isDropdown, dropdownItems }: N
       to={href} 
       className={`text-xs font-medium transition-colors hover:text-cyber-lightBlue relative ${
         isActive ? 'text-cyber-lightBlue' : 'text-white'
-      }`}
+      } ${className}`}
     >
       {text}
       {isActive && (

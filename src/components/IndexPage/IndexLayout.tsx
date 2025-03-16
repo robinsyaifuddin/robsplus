@@ -30,8 +30,8 @@ const IndexLayout = ({ children }: IndexLayoutProps) => {
   return (
     <PageTransition>
       <Navbar />
-      <main className="min-h-screen bg-cyber-black pt-24 md:pt-28">
-        <div className="space-y-16 md:space-y-20">
+      <main className="min-h-screen bg-cyber-black pt-20 sm:pt-24 md:pt-28">
+        <div className="space-y-12 md:space-y-16 lg:space-y-20">
           {children}
         </div>
       </main>

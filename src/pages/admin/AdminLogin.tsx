@@ -1,14 +1,15 @@
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock, User } from 'lucide-react';
+import { Lock, User, ArrowLeft } from 'lucide-react';
 import PageTransition from '@/components/PageTransition';
 import { useToast } from '@/components/ui/use-toast';
+import NavLogo from '@/components/navbar/NavLogo';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -37,7 +38,26 @@ const AdminLogin = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyber-darkBlue via-black to-cyber-darkBlue p-6">
+      {/* Navbar */}
+      <header className="fixed w-full z-50 glassmorphism shadow-cyber py-2">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-between">
+            <NavLogo isScrolled={true} />
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/" 
+                className="text-xs flex items-center gap-1 text-cyber-lightBlue hover:text-white transition-colors"
+              >
+                <ArrowLeft size={14} />
+                <span>Kembali ke Beranda</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Login Form */}
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyber-darkBlue via-black to-cyber-darkBlue p-6 pt-20">
         <Card className="w-full max-w-md border-cyber-lightBlue glassmorphism shadow-cyber">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold text-cyber-neonGreen">Admin Login</CardTitle>
