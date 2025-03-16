@@ -1,6 +1,6 @@
 
 import { useLocation } from 'react-router-dom';
-import { Phone } from 'lucide-react';
+import { Phone, Lock } from 'lucide-react';
 import NavItem from './NavItem';
 import CTAButton from '../CTAButton';
 
@@ -10,6 +10,7 @@ interface DesktopNavProps {
     href: string; 
     isDropdown?: boolean; 
     dropdownItems?: Array<{ text: string; href: string }>;
+    isAdmin?: boolean;
   }>;
   activeSection: string | null;
   handleNavigation: (path: string) => void;
@@ -22,7 +23,7 @@ const DesktopNav = ({ navLinks, activeSection, handleNavigation, isHashActive }:
   return (
     <div className="hidden md:flex items-center space-x-8">
       <ul className="flex space-x-6">
-        {navLinks.map((link) => (
+        {navLinks.filter(link => !link.isAdmin).map((link) => (
           <li key={link.text}>
             <NavItem 
               href={link.href} 
@@ -50,6 +51,14 @@ const DesktopNav = ({ navLinks, activeSection, handleNavigation, isHashActive }:
       >
         <Phone size={14} />
         <span>Konsultasi</span>
+      </a>
+      
+      <a 
+        href="/admin/login"
+        className="text-sm flex items-center gap-1 text-cyber-lightBlue hover:underline"
+      >
+        <Lock size={14} />
+        <span>Admin</span>
       </a>
     </div>
   );
