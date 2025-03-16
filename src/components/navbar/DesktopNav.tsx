@@ -21,8 +21,8 @@ const DesktopNav = ({ navLinks, activeSection, handleNavigation, isHashActive }:
   const location = useLocation();
   
   return (
-    <div className="hidden md:flex items-center space-x-8">
-      <ul className="flex space-x-6">
+    <div className="hidden md:flex items-center space-x-5">
+      <ul className="flex space-x-4">
         {navLinks.filter(link => !link.isAdmin).map((link) => (
           <li key={link.text}>
             <NavItem 
@@ -45,19 +45,19 @@ const DesktopNav = ({ navLinks, activeSection, handleNavigation, isHashActive }:
       
       <a 
         href="https://wa.me/6282279722417?text=Halo%20ROB'sPlus,%20saya%20ingin%20konsultasi%20layanan."
-        className="text-sm flex items-center gap-1 text-cyber-lightBlue hover:underline"
+        className="text-xs flex items-center gap-1 text-cyber-lightBlue hover:underline"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Phone size={14} />
+        <Phone size={12} />
         <span>Konsultasi</span>
       </a>
       
       <a 
         href="/admin/login"
-        className="text-sm flex items-center gap-1 text-cyber-lightBlue hover:underline"
+        className="text-xs flex items-center gap-1 text-cyber-lightBlue hover:underline"
       >
-        <Lock size={14} />
+        <Lock size={12} />
         <span>Admin</span>
       </a>
     </div>

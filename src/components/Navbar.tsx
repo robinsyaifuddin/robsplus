@@ -19,10 +19,10 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'py-3 glassmorphism shadow-cyber' : 'py-5 bg-transparent'
+        isScrolled ? 'py-2 glassmorphism shadow-cyber' : 'py-3 bg-transparent'
       }`}
     >
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-4 md:px-6">
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <NavLogo isScrolled={isScrolled} />
@@ -30,7 +30,7 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <DesktopNav 
             navLinks={navLinks}
-            activeSection={null} // Using isHashActive directly in component
+            activeSection={null}
             handleNavigation={handleNavigation}
             isHashActive={isHashActive}
           />
