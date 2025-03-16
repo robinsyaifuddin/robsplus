@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Trash, Plus, Edit, ExternalLink } from 'lucide-react';
 import {
@@ -129,7 +128,11 @@ interface PortfolioItemType {
   category: string;
 }
 
-const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
+interface PortfolioSectionProps {
+  preview?: boolean;
+}
+
+const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
   const [portfolioData, setPortfolioData] = useState(initialPortfolioData);
   const [flatPortfolioItems, setFlatPortfolioItems] = useState(flattenPortfolioData(portfolioData));
   const [editingItem, setEditingItem] = useState<PortfolioItemType | null>(null);
@@ -137,7 +140,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   
-  // Form for new or edited portfolio item
   const [formData, setFormData] = useState<Partial<PortfolioItemType>>({
     title: '',
     client: '',
@@ -150,18 +152,15 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
     category: 'jasaTugas'
   });
   
-  // Handler for form changes
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  // Handler for select changes
   const handleSelectChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  // Add new portfolio item
   const handleAddPortfolio = () => {
     const newItem: PortfolioItemType = {
       id: Date.now().toString(),
@@ -176,17 +175,14 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
       category: formData.category || 'jasaTugas',
     };
     
-    // Update the portfolio data
     const category = newItem.category as keyof typeof portfolioData;
     setPortfolioData(prev => ({
       ...prev,
       [category]: [...prev[category], newItem]
     }));
     
-    // Update the flat list
     setFlatPortfolioItems(prev => [...prev, newItem]);
     
-    // Reset form and close dialog
     setFormData({
       title: '',
       client: '',
@@ -206,7 +202,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
     });
   };
   
-  // Edit portfolio item
   const handleEditPortfolio = () => {
     if (!editingItem) return;
     
@@ -223,7 +218,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
       category: formData.category || editingItem.category,
     };
     
-    // If category changed, remove from old and add to new
     if (editingItem.category !== updatedItem.category) {
       const oldCategory = editingItem.category as keyof typeof portfolioData;
       const newCategory = updatedItem.category as keyof typeof portfolioData;
@@ -234,7 +228,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
         [newCategory]: [...prev[newCategory], updatedItem]
       }));
     } else {
-      // Just update in the same category
       const category = updatedItem.category as keyof typeof portfolioData;
       setPortfolioData(prev => ({
         ...prev,
@@ -244,12 +237,10 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
       }));
     }
     
-    // Update flat list
     setFlatPortfolioItems(prev => 
       prev.map(item => item.id === updatedItem.id ? updatedItem : item)
     );
     
-    // Reset and close
     setEditingItem(null);
     setIsEditDialogOpen(false);
     
@@ -259,21 +250,17 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
     });
   };
   
-  // Delete portfolio item
   const handleDeletePortfolio = (id: string) => {
-    // Find the item to get its category
     const itemToDelete = flatPortfolioItems.find(item => item.id === id);
     if (!itemToDelete) return;
     
     const category = itemToDelete.category as keyof typeof portfolioData;
     
-    // Update portfolio data
     setPortfolioData(prev => ({
       ...prev,
       [category]: prev[category].filter(item => item.id !== id)
     }));
     
-    // Update flat list
     setFlatPortfolioItems(prev => prev.filter(item => item.id !== id));
     
     toast({
@@ -282,7 +269,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
     });
   };
   
-  // Prepare to edit an item
   const startEditItem = (item: PortfolioItemType) => {
     setEditingItem(item);
     setFormData({
@@ -299,7 +285,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
     setIsEditDialogOpen(true);
   };
   
-  // Preview mode for dashboard overview
   if (preview) {
     return (
       <Card className="glassmorphism border-cyber-lightBlue/30">
@@ -348,7 +333,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
     );
   }
   
-  // Full management view
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -677,7 +661,6 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
         ))}
       </Tabs>
       
-      {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-[600px] bg-cyber-deepBlue border-cyber-purple/30">
           <DialogHeader>
@@ -822,3 +805,4 @@ const PortfolioSection = ({ preview = false }: { preview?: boolean }) => {
 };
 
 export default PortfolioSection;
+
