@@ -1,9 +1,9 @@
-
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Star, Quote, ArrowRight, ArrowLeft, Briefcase } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
 // Portfolio data with categories
 const portfolioData = {
@@ -167,7 +167,11 @@ const PortfolioItem = ({ item }: { item: {
   );
 };
 
-const PortfolioSection = () => {
+interface PortfolioSectionProps {
+  preview?: boolean;
+}
+
+const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
   const [activeTab, setActiveTab] = useState("semua");
@@ -178,6 +182,40 @@ const PortfolioSection = () => {
     ...portfolioData.jasaDigital,
     ...portfolioData.jasaPembelajaran,
   ];
+  
+  if (preview) {
+    return (
+      <Card className="glassmorphism border-cyber-lightBlue/30">
+        <CardHeader>
+          <CardTitle className="text-lg text-cyber-neonGreen">Portofolio</CardTitle>
+          <CardDescription className="text-cyber-lightBlue">Karya terbaru</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {allPortfolios.slice(0, 3).map((item, index) => (
+              <div key={index} className="flex items-center gap-3 p-2 rounded-md bg-cyber-deepBlue/50">
+                <div className="w-10 h-10 rounded overflow-hidden">
+                  <img 
+                    src={item.image} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder.svg";
+                    }}
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-cyber-lightBlue">{item.title}</p>
+                  <p className="text-xs text-gray-400">{item.client}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
   
   return (
     <section className="py-24 px-6 relative overflow-hidden" id="portfolio" ref={ref}>
