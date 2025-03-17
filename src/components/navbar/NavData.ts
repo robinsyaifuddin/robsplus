@@ -11,7 +11,6 @@ export const navLinks = [
       { text: 'Jasa Pembelajaran', href: '/services#jasa-pembelajaran' }
     ]
   },
-  { text: 'Harga', href: '/#pricing' },
   { text: 'Portofolio', href: '/#portfolio' },
   { text: 'Tentang Kami', href: '/about' },
   { text: 'Admin', href: '/admin/login', isAdmin: true }
