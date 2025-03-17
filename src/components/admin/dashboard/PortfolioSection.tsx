@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
@@ -110,8 +109,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
 
   const handleAddPortfolio = () => {
     if (selectedFile) {
-      // In a real application, this would upload the file to a server
-      // For this demo, we'll just use a placeholder
       console.log('Uploading file:', selectedFile);
     }
 
@@ -133,7 +130,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
     if (!currentPortfolio) return;
     
     if (selectedFile) {
-      // Handle file upload in a real application
       console.log('Uploading updated file:', selectedFile);
     }
 
@@ -183,7 +179,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
     
     setSelectedFile(file);
     
-    // Create a preview URL
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreviewUrl(reader.result as string);
@@ -207,7 +202,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
     setIsDeleteDialogOpen(true);
   };
 
-  // If in preview mode, only show a few portfolios
   const displayPortfolios = preview ? portfolios.slice(0, 3) : portfolios;
 
   return (
@@ -281,7 +275,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
         </ScrollArea>
       </CardContent>
 
-      {/* Add Portfolio Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
@@ -383,7 +376,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
         </DialogContent>
       </Dialog>
 
-      {/* Edit Portfolio Dialog */}
       {currentPortfolio && (
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="sm:max-w-[525px]">
@@ -484,7 +476,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
         </Dialog>
       )}
 
-      {/* Delete Portfolio Dialog */}
       {currentPortfolio && (
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <AlertDialogContent>
