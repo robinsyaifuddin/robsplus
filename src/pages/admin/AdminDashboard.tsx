@@ -6,7 +6,7 @@ import { BarChart3, Eye, ShoppingCart, Users, Briefcase } from 'lucide-react';
 import AnalyticsSection from '@/components/admin/dashboard/AnalyticsSection';
 import OrdersSection from '@/components/admin/dashboard/OrdersSection';
 import ServicesSection from '@/components/admin/dashboard/ServicesSection';
-import PortfolioSection from '@/components/admin/dashboard/PortfolioSection';
+import PortfolioSection from '@/components/admin/dashboard/portfolio/PortfolioSection';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 
