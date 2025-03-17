@@ -1,8 +1,16 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, Trash2, Image, Link } from 'lucide-react';
-import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
   DialogContent,
@@ -11,385 +19,497 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { 
+  Table, 
+  TableBody, 
+  TableCaption, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { PlusCircle, Pencil, Trash2, ImagePlus, X } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
-interface PortfolioItem {
+interface Portfolio {
   id: string;
   title: string;
   description: string;
-  image: string;
-  link?: string;
+  imageUrl: string;
   category: string;
+  date: string;
 }
 
-interface PortfolioSectionProps {
+export interface PortfolioSectionProps {
   preview?: boolean;
 }
 
-// Mock portfolio data
-const mockPortfolio: PortfolioItem[] = [
+const initialPortfolios: Portfolio[] = [
   {
     id: '1',
-    title: 'Website E-commerce',
-    description: 'Website toko online dengan fitur pembayaran terintegrasi',
-    image: '/portfolio/ecommerce-site.jpg',
-    link: 'https://example.com/ecommerce',
+    title: 'Website E-Commerce Toko Batik',
+    description: 'Pembuatan website toko online untuk penjualan produk batik dengan fitur pembayaran dan katalog produk yang lengkap.',
+    imageUrl: '/placeholder.svg',
     category: 'Website',
+    date: '2023-05-15'
   },
   {
     id: '2',
-    title: 'Desain Logo Perusahaan',
-    description: 'Logo modern untuk startup teknologi',
-    image: '/portfolio/company-logo.jpg',
+    title: 'Desain Logo Brand Fashion',
+    description: 'Perancangan logo untuk brand fashion lokal dengan konsep minimalis dan modern yang mencerminkan nilai merek.',
+    imageUrl: '/placeholder.svg',
     category: 'Desain',
+    date: '2023-06-22'
   },
   {
     id: '3',
-    title: 'Aplikasi Mobile Pendidikan',
-    description: 'Aplikasi pembelajaran bahasa Inggris untuk anak-anak',
-    image: '/portfolio/education-app.jpg',
-    link: 'https://example.com/eduapp',
+    title: 'Aplikasi Manajemen Inventaris',
+    description: 'Pengembangan aplikasi untuk memudahkan pengusaha kecil melacak inventaris, penjualan, dan pembelian barang.',
+    imageUrl: '/placeholder.svg',
     category: 'Aplikasi',
+    date: '2023-07-10'
   },
   {
     id: '4',
-    title: 'Laporan Penelitian',
-    description: 'Laporan penelitian ilmiah tentang energi terbarukan',
-    image: '/portfolio/research-paper.jpg',
-    category: 'Tugas Akademik',
-  },
+    title: 'Video Promosi Produk Makanan',
+    description: 'Pembuatan video iklan produk makanan untuk platform social media dengan durasi 1 menit yang memperlihatkan value proposition.',
+    imageUrl: '/placeholder.svg',
+    category: 'Video',
+    date: '2023-08-05'
+  }
 ];
 
-const PortfolioSection = ({ preview = false }: PortfolioSectionProps) => {
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(mockPortfolio);
+const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) => {
+  const [portfolios, setPortfolios] = useState<Portfolio[]>(initialPortfolios);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
-  const [newItem, setNewItem] = useState<Partial<PortfolioItem>>({
+  const [newPortfolio, setNewPortfolio] = useState<Omit<Portfolio, 'id'>>({
     title: '',
     description: '',
-    image: '',
-    link: '',
+    imageUrl: '',
     category: '',
+    date: new Date().toISOString().split('T')[0]
   });
+  const [currentPortfolio, setCurrentPortfolio] = useState<Portfolio | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const { toast: uiToast } = useToast();
 
-  // For preview mode in dashboard
-  if (preview) {
-    return (
-      <Card className="glassmorphism border-cyber-lightBlue/30">
-        <CardHeader>
-          <CardTitle className="text-cyber-neonGreen">Portofolio</CardTitle>
-          <CardDescription className="text-cyber-lightBlue">
-            Kelola proyek dan karya yang ditampilkan di website
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            {mockPortfolio.slice(0, 4).map((item) => (
-              <div key={item.id} className="bg-cyber-darkBlue/50 p-3 rounded-md border border-cyber-purple/20">
-                <h4 className="font-medium text-sm text-white truncate">{item.title}</h4>
-                <p className="text-xs text-gray-400 truncate">{item.category}</p>
-              </div>
-            ))}
-          </div>
-          <Button className="w-full mt-4 bg-cyber-purple/20 hover:bg-cyber-purple/40 text-cyber-lightBlue">
-            Lihat Semua
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const handleAddItem = () => {
-    setIsAddDialogOpen(true);
-    setNewItem({ title: '', description: '', image: '', link: '', category: '' });
-  };
-
-  const handleEditItem = (item: PortfolioItem) => {
-    setIsEditDialogOpen(true);
-    setSelectedItem(item);
-  };
-
-  const handleDeleteItem = (item: PortfolioItem) => {
-    setIsDeleteDialogOpen(true);
-    setSelectedItem(item);
-  };
-
-  const confirmDeleteItem = () => {
-    if (selectedItem) {
-      setPortfolioItems(portfolioItems.filter((item) => item.id !== selectedItem.id));
-      setIsDeleteDialogOpen(false);
-      setSelectedItem(null);
+  const handleAddPortfolio = () => {
+    if (selectedFile) {
+      // In a real application, this would upload the file to a server
+      // For this demo, we'll just use a placeholder
+      console.log('Uploading file:', selectedFile);
     }
-  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) => {
-    setNewItem({ ...newItem, [field]: e.target.value });
-  };
-
-  const handleAddPortfolioItem = () => {
-    const newItemWithId: PortfolioItem = {
-      id: String(Date.now()),
-      title: newItem.title || 'Untitled',
-      description: newItem.description || '',
-      image: newItem.image || '',
-      link: newItem.link || '',
-      category: newItem.category || 'Uncategorized',
+    const newId = (portfolios.length + 1).toString();
+    const portfolioWithId = { 
+      ...newPortfolio, 
+      id: newId,
+      imageUrl: previewUrl || '/placeholder.svg' 
     };
-
-    setPortfolioItems([...portfolioItems, newItemWithId]);
+    
+    setPortfolios([...portfolios, portfolioWithId]);
     setIsAddDialogOpen(false);
-    setNewItem({ title: '', description: '', image: '', link: '', category: '' });
+    resetForm();
+    
+    toast.success('Portofolio berhasil ditambahkan');
   };
+
+  const handleEditPortfolio = () => {
+    if (!currentPortfolio) return;
+    
+    if (selectedFile) {
+      // Handle file upload in a real application
+      console.log('Uploading updated file:', selectedFile);
+    }
+
+    const updatedPortfolios = portfolios.map(p => 
+      p.id === currentPortfolio.id 
+        ? { 
+            ...currentPortfolio, 
+            imageUrl: previewUrl || currentPortfolio.imageUrl 
+          } 
+        : p
+    );
+    
+    setPortfolios(updatedPortfolios);
+    setIsEditDialogOpen(false);
+    resetForm();
+    
+    toast.success('Portofolio berhasil diperbarui');
+  };
+
+  const handleDeletePortfolio = () => {
+    if (!currentPortfolio) return;
+    
+    const filteredPortfolios = portfolios.filter(p => p.id !== currentPortfolio.id);
+    setPortfolios(filteredPortfolios);
+    setIsDeleteDialogOpen(false);
+    setCurrentPortfolio(null);
+    
+    toast.success('Portofolio berhasil dihapus');
+  };
+
+  const resetForm = () => {
+    setNewPortfolio({
+      title: '',
+      description: '',
+      imageUrl: '',
+      category: '',
+      date: new Date().toISOString().split('T')[0]
+    });
+    setCurrentPortfolio(null);
+    setSelectedFile(null);
+    setPreviewUrl('');
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setSelectedFile(file);
+    
+    // Create a preview URL
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const clearFileSelection = () => {
+    setSelectedFile(null);
+    setPreviewUrl('');
+  };
+
+  const openEditDialog = (portfolio: Portfolio) => {
+    setCurrentPortfolio(portfolio);
+    setPreviewUrl(portfolio.imageUrl);
+    setIsEditDialogOpen(true);
+  };
+
+  const openDeleteDialog = (portfolio: Portfolio) => {
+    setCurrentPortfolio(portfolio);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // If in preview mode, only show a few portfolios
+  const displayPortfolios = preview ? portfolios.slice(0, 3) : portfolios;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-cyber-neonGreen">Portofolio</h2>
-        <Button onClick={handleAddItem} className="bg-cyber-purple/20 hover:bg-cyber-purple/40 text-cyber-lightBlue">
-          <Plus className="mr-2 h-4 w-4" />
-          Tambah Portofolio
-        </Button>
-      </div>
-
-      <ScrollArea className="h-[500px] w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {portfolioItems.map((item) => (
-            <Card key={item.id} className="glassmorphism border-cyber-lightBlue/30">
-              <CardHeader>
-                <CardTitle className="text-cyber-neonGreen">{item.title}</CardTitle>
-                <CardDescription className="text-cyber-lightBlue">{item.category}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <img src={item.image} alt={item.title} className="rounded-md w-full h-32 object-cover mb-2" />
-                <p className="text-sm text-cyber-lightBlue">{item.description}</p>
-                <div className="flex justify-between items-center">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => handleEditItem(item)}
-                    className="bg-cyber-blue/20 hover:bg-cyber-blue/40 text-cyber-lightBlue"
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDeleteItem(item)}
-                    className="bg-red-500/20 hover:bg-red-500/40 text-cyber-lightBlue"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Hapus
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+    <Card className="w-full shadow-md border-gray-800/20">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-center">
+          <div>
+            <CardTitle>Portfolio</CardTitle>
+            <CardDescription>Daftar portfolio dan karya yang telah dibuat.</CardDescription>
+          </div>
+          {!preview && (
+            <Button 
+              onClick={() => setIsAddDialogOpen(true)} 
+              className="flex items-center gap-1"
+            >
+              <PlusCircle size={16} />
+              <span>Tambah</span>
+            </Button>
+          )}
         </div>
-      </ScrollArea>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className="h-[calc(100vh-15rem)] pr-4">
+          <Table>
+            <TableCaption>Daftar portfolio terbaru {preview && "(preview)"}</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Judul</TableHead>
+                <TableHead>Kategori</TableHead>
+                <TableHead>Tanggal</TableHead>
+                {!preview && <TableHead className="text-right">Aksi</TableHead>}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {displayPortfolios.length > 0 ? (
+                displayPortfolios.map((portfolio) => (
+                  <TableRow key={portfolio.id}>
+                    <TableCell className="font-medium">{portfolio.title}</TableCell>
+                    <TableCell>{portfolio.category}</TableCell>
+                    <TableCell>{new Date(portfolio.date).toLocaleDateString('id-ID')}</TableCell>
+                    {!preview && (
+                      <TableCell className="text-right space-x-1">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => openEditDialog(portfolio)}
+                        >
+                          <Pencil size={16} />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => openDeleteDialog(portfolio)}
+                          className="text-red-500 hover:text-red-600"
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-8 text-gray-500">
+                    Belum ada data portfolio
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </ScrollArea>
+      </CardContent>
 
-      {/* Add Portfolio Item Dialog */}
+      {/* Add Portfolio Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="glassmorphism border-cyber-lightBlue/30">
+        <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
-            <DialogTitle className="text-cyber-neonGreen">Tambah Portofolio</DialogTitle>
-            <DialogDescription className="text-cyber-lightBlue">
-              Tambahkan proyek atau karya baru ke daftar portofolio Anda.
+            <DialogTitle>Tambah Portfolio Baru</DialogTitle>
+            <DialogDescription>
+              Masukkan informasi untuk portfolio baru yang akan ditambahkan.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="title" className="text-right text-cyber-lightBlue">
-                Judul
-              </Label>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Judul Portfolio</Label>
               <Input
                 id="title"
-                value={newItem.title || ''}
-                onChange={(e) => handleInputChange(e, 'title')}
-                className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
+                value={newPortfolio.title}
+                onChange={(e) => setNewPortfolio({...newPortfolio, title: e.target.value})}
+                placeholder="Masukkan judul portfolio"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="description" className="text-right text-cyber-lightBlue">
-                Deskripsi
-              </Label>
-              <Textarea
-                id="description"
-                value={newItem.description || ''}
-                onChange={(e) => handleInputChange(e, 'description')}
-                className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="image" className="text-right text-cyber-lightBlue">
-                URL Gambar
-              </Label>
-              <Input
-                id="image"
-                value={newItem.image || ''}
-                onChange={(e) => handleInputChange(e, 'image')}
-                className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="link" className="text-right text-cyber-lightBlue">
-                URL Proyek
-              </Label>
-              <Input
-                id="link"
-                value={newItem.link || ''}
-                onChange={(e) => handleInputChange(e, 'link')}
-                className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="category" className="text-right text-cyber-lightBlue">
-                Kategori
-              </Label>
+            <div className="space-y-2">
+              <Label htmlFor="category">Kategori</Label>
               <Input
                 id="category"
-                value={newItem.category || ''}
-                onChange={(e) => handleInputChange(e, 'category')}
-                className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
+                value={newPortfolio.category}
+                onChange={(e) => setNewPortfolio({...newPortfolio, category: e.target.value})}
+                placeholder="Website, Desain, Video, dll."
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="date">Tanggal</Label>
+              <Input
+                id="date"
+                type="date"
+                value={newPortfolio.date}
+                onChange={(e) => setNewPortfolio({...newPortfolio, date: e.target.value})}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Deskripsi</Label>
+              <Textarea
+                id="description"
+                value={newPortfolio.description}
+                onChange={(e) => setNewPortfolio({...newPortfolio, description: e.target.value})}
+                placeholder="Deskripsi singkat tentang portfolio"
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Gambar Thumbnail</Label>
+              <div className="flex items-center gap-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={() => document.getElementById('add-image')?.click()}
+                >
+                  <ImagePlus size={16} className="mr-2" />
+                  Pilih Gambar
+                </Button>
+                <input
+                  id="add-image"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+                {selectedFile && (
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={clearFileSelection}
+                  >
+                    <X size={16} />
+                  </Button>
+                )}
+              </div>
+              {previewUrl && (
+                <div className="mt-2 border rounded-md overflow-hidden">
+                  <img 
+                    src={previewUrl} 
+                    alt="Preview" 
+                    className="w-full h-auto max-h-40 object-cover"
+                  />
+                </div>
+              )}
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setIsAddDialogOpen(false)}>
+            <Button variant="outline" onClick={() => {
+              setIsAddDialogOpen(false);
+              resetForm();
+            }}>
               Batal
             </Button>
-            <Button type="submit" onClick={handleAddPortfolioItem}>
+            <Button onClick={handleAddPortfolio} disabled={!newPortfolio.title || !newPortfolio.category}>
               Simpan
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Edit Portfolio Item Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="glassmorphism border-cyber-lightBlue/30">
-          <DialogHeader>
-            <DialogTitle className="text-cyber-neonGreen">Edit Portofolio</DialogTitle>
-            <DialogDescription className="text-cyber-lightBlue">
-              Edit detail proyek atau karya yang ada di daftar portofolio Anda.
-            </DialogDescription>
-          </DialogHeader>
-          {selectedItem && (
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="title" className="text-right text-cyber-lightBlue">
-                  Judul
-                </Label>
+      {/* Edit Portfolio Dialog */}
+      {currentPortfolio && (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="sm:max-w-[525px]">
+            <DialogHeader>
+              <DialogTitle>Edit Portfolio</DialogTitle>
+              <DialogDescription>
+                Ubah informasi untuk portfolio yang dipilih.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-title">Judul Portfolio</Label>
                 <Input
-                  id="title"
-                  value={selectedItem.title}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, title: e.target.value })
-                  }
-                  className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
+                  id="edit-title"
+                  value={currentPortfolio.title}
+                  onChange={(e) => setCurrentPortfolio({...currentPortfolio, title: e.target.value})}
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right text-cyber-lightBlue">
-                  Deskripsi
-                </Label>
+              <div className="space-y-2">
+                <Label htmlFor="edit-category">Kategori</Label>
+                <Input
+                  id="edit-category"
+                  value={currentPortfolio.category}
+                  onChange={(e) => setCurrentPortfolio({...currentPortfolio, category: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-date">Tanggal</Label>
+                <Input
+                  id="edit-date"
+                  type="date"
+                  value={currentPortfolio.date}
+                  onChange={(e) => setCurrentPortfolio({...currentPortfolio, date: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-description">Deskripsi</Label>
                 <Textarea
-                  id="description"
-                  value={selectedItem.description}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, description: e.target.value })
-                  }
-                  className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
+                  id="edit-description"
+                  value={currentPortfolio.description}
+                  onChange={(e) => setCurrentPortfolio({...currentPortfolio, description: e.target.value})}
+                  rows={3}
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="image" className="text-right text-cyber-lightBlue">
-                  URL Gambar
-                </Label>
-                <Input
-                  id="image"
-                  value={selectedItem.image}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, image: e.target.value })
-                  }
-                  className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="link" className="text-right text-cyber-lightBlue">
-                  URL Proyek
-                </Label>
-                <Input
-                  id="link"
-                  value={selectedItem.link || ''}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, link: e.target.value })
-                  }
-                  className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="category" className="text-right text-cyber-lightBlue">
-                  Kategori
-                </Label>
-                <Input
-                  id="category"
-                  value={selectedItem.category}
-                  onChange={(e) =>
-                    setSelectedItem({ ...selectedItem, category: e.target.value })
-                  }
-                  className="col-span-3 bg-cyber-darkBlue/50 border-cyber-lightBlue/20 text-cyber-lightBlue"
-                />
+              <div className="space-y-2">
+                <Label>Gambar Thumbnail</Label>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => document.getElementById('edit-image')?.click()}
+                  >
+                    <ImagePlus size={16} className="mr-2" />
+                    {previewUrl ? 'Ganti Gambar' : 'Pilih Gambar'}
+                  </Button>
+                  <input
+                    id="edit-image"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                  {previewUrl && (
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={clearFileSelection}
+                    >
+                      <X size={16} />
+                    </Button>
+                  )}
+                </div>
+                {previewUrl && (
+                  <div className="mt-2 border rounded-md overflow-hidden">
+                    <img 
+                      src={previewUrl} 
+                      alt="Preview" 
+                      className="w-full h-auto max-h-40 object-cover"
+                    />
+                  </div>
+                )}
               </div>
             </div>
-          )}
-          <DialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setIsEditDialogOpen(false)}>
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              onClick={() => {
-                if (selectedItem) {
-                  setPortfolioItems(
-                    portfolioItems.map((item) => (item.id === selectedItem.id ? selectedItem : item))
-                  );
-                  setIsEditDialogOpen(false);
-                  setSelectedItem(null);
-                }
-              }}
-            >
-              Simpan
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setIsEditDialogOpen(false);
+                resetForm();
+              }}>
+                Batal
+              </Button>
+              <Button onClick={handleEditPortfolio}>
+                Simpan Perubahan
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
-      {/* Delete Portfolio Item Dialog */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="glassmorphism border-cyber-lightBlue/30">
-          <DialogHeader>
-            <DialogTitle className="text-cyber-neonGreen">Hapus Portofolio</DialogTitle>
-            <DialogDescription className="text-cyber-lightBlue">
-              Apakah Anda yakin ingin menghapus proyek atau karya ini dari daftar portofolio Anda?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setIsDeleteDialogOpen(false)}>
-              Batal
-            </Button>
-            <Button type="submit" variant="destructive" onClick={confirmDeleteItem}>
-              Hapus
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+      {/* Delete Portfolio Dialog */}
+      {currentPortfolio && (
+        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Konfirmasi Hapus</AlertDialogTitle>
+              <AlertDialogDescription>
+                Anda yakin ingin menghapus portfolio "{currentPortfolio.title}"? 
+                Tindakan ini tidak dapat dibatalkan.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => {
+                setIsDeleteDialogOpen(false);
+                setCurrentPortfolio(null);
+              }}>
+                Batal
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeletePortfolio} className="bg-red-500 hover:bg-red-600">
+                Hapus
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </Card>
   );
 };
 
