@@ -3,18 +3,63 @@ import React, { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Briefcase } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { portfolioData, getAllPortfolios } from './portfolioData';
+import { portfolioData } from './portfolioData';
 import { PortfolioSectionProps } from './types';
 import PortfolioGrid from './PortfolioGrid';
 import PortfolioPreview from './PortfolioPreview';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 
 const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
   const [activeTab, setActiveTab] = useState("semua");
+  const { portfolios } = usePortfolio();
+  
+  // Map admin portfolios to the format expected by PortfolioGrid
+  const adminPortfolios = portfolios.map(p => ({
+    title: p.title,
+    client: p.category,
+    image: p.imageUrl,
+    description: p.description,
+    testimonial: "Testimoni belum tersedia",
+    clientRole: "Klien",
+    clientImage: "/testimonials/testimonial-1.jpg",
+    rating: 5,
+  }));
+  
+  // Filter portfolios by category
+  const jasaTugasPortfolios = adminPortfolios.filter(p => 
+    p.client.toLowerCase().includes('tugas') || 
+    p.title.toLowerCase().includes('tugas') || 
+    p.description.toLowerCase().includes('tugas')
+  );
+  
+  const jasaDigitalPortfolios = adminPortfolios.filter(p => 
+    p.client.toLowerCase().includes('digital') || 
+    p.title.toLowerCase().includes('digital') || 
+    p.description.toLowerCase().includes('digital')
+  );
+  
+  const jasaPembelajaranPortfolios = adminPortfolios.filter(p => 
+    p.client.toLowerCase().includes('pembelajaran') || 
+    p.title.toLowerCase().includes('pembelajaran') || 
+    p.description.toLowerCase().includes('belajar')
+  );
+  
+  // Fallback to original data if categories are empty
+  const displayJasaTugas = jasaTugasPortfolios.length > 0 ? jasaTugasPortfolios : portfolioData.jasaTugas;
+  const displayJasaDigital = jasaDigitalPortfolios.length > 0 ? jasaDigitalPortfolios : portfolioData.jasaDigital;
+  const displayJasaPembelajaran = jasaPembelajaranPortfolios.length > 0 ? jasaPembelajaranPortfolios : portfolioData.jasaPembelajaran;
+  
+  // Combined portfolios for the "All" tab
+  const allPortfolios = [
+    ...displayJasaTugas,
+    ...displayJasaDigital,
+    ...displayJasaPembelajaran
+  ];
   
   if (preview) {
-    return <PortfolioPreview />;
+    return <PortfolioPreview portfolios={adminPortfolios.slice(0, 3)} />;
   }
   
   return (
@@ -74,7 +119,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
           
           <TabsContent value="semua" className="mt-0">
             <PortfolioGrid 
-              portfolios={getAllPortfolios()} 
+              portfolios={allPortfolios} 
               isInView={isInView} 
               keyPrefix="all" 
             />
@@ -82,7 +127,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
           
           <TabsContent value="jasa-tugas" className="mt-0">
             <PortfolioGrid 
-              portfolios={portfolioData.jasaTugas} 
+              portfolios={displayJasaTugas} 
               isInView={isInView} 
               keyPrefix="tugas" 
             />
@@ -90,7 +135,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
           
           <TabsContent value="jasa-digital" className="mt-0">
             <PortfolioGrid 
-              portfolios={portfolioData.jasaDigital} 
+              portfolios={displayJasaDigital} 
               isInView={isInView} 
               keyPrefix="digital" 
             />
@@ -98,7 +143,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
           
           <TabsContent value="jasa-pembelajaran" className="mt-0">
             <PortfolioGrid 
-              portfolios={portfolioData.jasaPembelajaran} 
+              portfolios={displayJasaPembelajaran} 
               isInView={isInView} 
               keyPrefix="pembelajaran" 
             />

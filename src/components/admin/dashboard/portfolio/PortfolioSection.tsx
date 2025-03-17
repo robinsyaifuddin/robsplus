@@ -3,29 +3,23 @@ import React, { useState, useEffect } from 'react';
 import { PortfolioSectionProps } from './types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getAllPortfolios } from '@/components/portfolio/portfolioData';
 import PortfolioTable from './PortfolioTable';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Save } from 'lucide-react';
 import { Portfolio } from './types';
 import AddPortfolioDialog from './AddPortfolioDialog';
 import EditPortfolioDialog from './EditPortfolioDialog';
 import DeletePortfolioDialog from './DeletePortfolioDialog';
 import { toast } from 'sonner';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 
 const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) => {
-  const allPortfolios = getAllPortfolios().map((item, index) => ({
-    id: (index + 1).toString(),
-    title: item.title,
-    description: item.description || "",
-    imageUrl: item.image,
-    category: item.client, // Using client as category for now
-    date: new Date().toISOString().split('T')[0] // Default date
-  }));
+  // Use our context instead of local state
+  const { portfolios, setPortfolios, savePortfolios } = usePortfolio();
   
-  const [portfolios, setPortfolios] = useState<Portfolio[]>(allPortfolios);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [newPortfolio, setNewPortfolio] = useState<Omit<Portfolio, 'id'>>({
     title: '',
     description: '',
@@ -52,8 +46,11 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
     setPortfolios([...portfolios, portfolioWithId]);
     setIsAddDialogOpen(false);
     resetForm();
+    setHasUnsavedChanges(true);
     
-    toast.success('Portofolio berhasil ditambahkan');
+    toast.success('Portofolio berhasil ditambahkan', {
+      description: 'Jangan lupa untuk menyimpan perubahan'
+    });
   };
 
   const handleEditPortfolio = () => {
@@ -75,8 +72,11 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
     setPortfolios(updatedPortfolios);
     setIsEditDialogOpen(false);
     resetForm();
+    setHasUnsavedChanges(true);
     
-    toast.success('Portofolio berhasil diperbarui');
+    toast.success('Portofolio berhasil diperbarui', {
+      description: 'Jangan lupa untuk menyimpan perubahan'
+    });
   };
 
   const handleDeletePortfolio = () => {
@@ -86,8 +86,16 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
     setPortfolios(filteredPortfolios);
     setIsDeleteDialogOpen(false);
     setCurrentPortfolio(null);
+    setHasUnsavedChanges(true);
     
-    toast.success('Portofolio berhasil dihapus');
+    toast.success('Portofolio berhasil dihapus', {
+      description: 'Jangan lupa untuk menyimpan perubahan'
+    });
+  };
+
+  const handleSaveChanges = () => {
+    savePortfolios();
+    setHasUnsavedChanges(false);
   };
 
   const resetForm = () => {
@@ -132,6 +140,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
     setIsDeleteDialogOpen(true);
   };
 
+  // Preview mode for the dashboard overview
   if (preview) {
     return (
       <Card className="glassmorphism border-cyber-lightBlue/30">
@@ -178,13 +187,24 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
               <CardTitle className="text-lg text-cyber-neonGreen">Portofolio</CardTitle>
               <CardDescription className="text-cyber-lightBlue">Kelola portofolio ROB'sPlus</CardDescription>
             </div>
-            <Button 
-              onClick={() => setIsAddDialogOpen(true)} 
-              className="flex items-center gap-1"
-            >
-              <PlusCircle size={16} />
-              <span>Tambah</span>
-            </Button>
+            <div className="flex gap-2">
+              {hasUnsavedChanges && (
+                <Button 
+                  onClick={handleSaveChanges} 
+                  className="flex items-center gap-1 bg-cyber-neonGreen text-black hover:bg-cyber-neonGreen/80"
+                >
+                  <Save size={16} />
+                  <span>Simpan Perubahan</span>
+                </Button>
+              )}
+              <Button 
+                onClick={() => setIsAddDialogOpen(true)} 
+                className="flex items-center gap-1"
+              >
+                <PlusCircle size={16} />
+                <span>Tambah</span>
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>

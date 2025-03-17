@@ -1,11 +1,28 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { PortfolioItem } from './types';
-import { getAllPortfolios } from './portfolioData';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 
-const PortfolioPreview: React.FC = () => {
-  const allPortfolios = getAllPortfolios();
+interface PortfolioPreviewProps {
+  portfolios?: PortfolioItem[];
+}
+
+const PortfolioPreview: React.FC<PortfolioPreviewProps> = ({ portfolios }) => {
+  const { portfolios: adminPortfolios } = usePortfolio();
+  
+  // Use either provided portfolios or convert from admin portfolios
+  const displayItems = portfolios || adminPortfolios.slice(0, 3).map(p => ({
+    title: p.title,
+    client: p.category,
+    image: p.imageUrl,
+    description: p.description,
+    testimonial: "Testimoni belum tersedia",
+    clientRole: "Klien",
+    clientImage: "/testimonials/testimonial-1.jpg",
+    rating: 5,
+  }));
   
   return (
     <Card className="glassmorphism border-cyber-lightBlue/30">
@@ -15,7 +32,7 @@ const PortfolioPreview: React.FC = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {allPortfolios.slice(0, 3).map((item, index) => (
+          {displayItems.slice(0, 3).map((item, index) => (
             <div key={index} className="flex items-center gap-3 p-2 rounded-md bg-cyber-deepBlue/50">
               <div className="w-10 h-10 rounded overflow-hidden">
                 <img 

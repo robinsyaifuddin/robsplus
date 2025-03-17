@@ -1,51 +1,58 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Services from "./pages/Services";
-import Order from "./pages/Order";
-import NotFound from "./pages/NotFound";
-import ROBsAssistant from "./components/ROBsAssistant";
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminLayout from "./pages/admin/AdminLayout";
-import { AdminAuthProvider } from "./contexts/AdminAuthContext";
-import AdminRoute from "./components/admin/AdminRoute";
-import About from "./pages/About";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
+import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
+import { PortfolioProvider } from '@/contexts/PortfolioContext';
+import './App.css';
 
-const queryClient = new QueryClient();
+// Pages
+import Index from '@/pages/Index';
+import About from '@/pages/About';
+import Services from '@/pages/Services';
+import Order from '@/pages/Order';
+import NotFound from '@/pages/NotFound';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AdminAuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+// Admin pages
+import AdminLayout from '@/pages/admin/AdminLayout';
+import AdminLogin from '@/pages/admin/AdminLogin';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+
+// Page transition
+import PageTransition from '@/components/PageTransition';
+
+// Scroll to top for React Router
+import { ScrollToTop } from '@/components/ui/scroll-to-top';
+
+function App() {
+  return (
+    <AdminAuthProvider>
+      <PortfolioProvider>
+        <Router>
+          <ScrollToTop />
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/order" element={<Order />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+            <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+            <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
+            <Route path="/order" element={<PageTransition><Order /></PageTransition>} />
+            
+            {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
-              <Route path="orders" element={<AdminRoute><AdminDashboard section="orders" /></AdminRoute>} />
-              <Route path="services" element={<AdminRoute><AdminDashboard section="services" /></AdminRoute>} />
-              <Route path="portfolio" element={<AdminRoute><AdminDashboard section="portfolio" /></AdminRoute>} />
-              <Route path="analytics" element={<AdminRoute><AdminDashboard section="analytics" /></AdminRoute>} />
+              <Route path="analytics" element={<AdminDashboard section="analytics" />} />
+              <Route path="orders" element={<AdminDashboard section="orders" />} />
+              <Route path="services" element={<AdminDashboard section="services" />} />
+              <Route path="portfolio" element={<AdminDashboard section="portfolio" />} />
             </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <ROBsAssistant />
-        </BrowserRouter>
-      </AdminAuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+          <Toaster position="top-right" />
+        </Router>
+      </PortfolioProvider>
+    </AdminAuthProvider>
+  );
+}
 
 export default App;
