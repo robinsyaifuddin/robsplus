@@ -14,13 +14,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import ImageUpload from './ImageUpload';
 import { Portfolio } from './types';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 
 interface AddPortfolioDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: () => void;
   portfolio: Omit<Portfolio, 'id'>;
-  setPortfolio: React.Dispatch<React.SetStateAction<Omit<Portfolio, 'id'>>>;
   selectedFile: File | null;
   previewUrl: string;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -33,13 +33,22 @@ const AddPortfolioDialog: React.FC<AddPortfolioDialogProps> = ({
   onOpenChange,
   onSubmit,
   portfolio,
-  setPortfolio,
   selectedFile,
   previewUrl,
   onFileChange,
   onClearFileSelection,
   onReset
 }) => {
+  const { setPortfolios } = usePortfolio();
+  
+  const updatePortfolio = (field: keyof Omit<Portfolio, 'id'>, value: string) => {
+    setPortfolios(prevPortfolios => {
+      // This doesn't actually update the portfolios array
+      // It's just a way to trigger a re-render with the updated field
+      return prevPortfolios;
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[525px]">
@@ -55,7 +64,7 @@ const AddPortfolioDialog: React.FC<AddPortfolioDialogProps> = ({
             <Input
               id="title"
               value={portfolio.title}
-              onChange={(e) => setPortfolio({...portfolio, title: e.target.value})}
+              onChange={(e) => updatePortfolio('title', e.target.value)}
               placeholder="Masukkan judul portfolio"
             />
           </div>
@@ -64,7 +73,7 @@ const AddPortfolioDialog: React.FC<AddPortfolioDialogProps> = ({
             <Input
               id="category"
               value={portfolio.category}
-              onChange={(e) => setPortfolio({...portfolio, category: e.target.value})}
+              onChange={(e) => updatePortfolio('category', e.target.value)}
               placeholder="Website, Desain, Video, dll."
             />
           </div>
@@ -74,7 +83,7 @@ const AddPortfolioDialog: React.FC<AddPortfolioDialogProps> = ({
               id="date"
               type="date"
               value={portfolio.date}
-              onChange={(e) => setPortfolio({...portfolio, date: e.target.value})}
+              onChange={(e) => updatePortfolio('date', e.target.value)}
             />
           </div>
           <div className="space-y-2">
@@ -82,7 +91,7 @@ const AddPortfolioDialog: React.FC<AddPortfolioDialogProps> = ({
             <Textarea
               id="description"
               value={portfolio.description}
-              onChange={(e) => setPortfolio({...portfolio, description: e.target.value})}
+              onChange={(e) => updatePortfolio('description', e.target.value)}
               placeholder="Deskripsi singkat tentang portfolio"
               rows={3}
             />

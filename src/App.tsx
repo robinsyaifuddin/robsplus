@@ -21,7 +21,7 @@ import AdminDashboard from '@/pages/admin/AdminDashboard';
 import PageTransition from '@/components/PageTransition';
 
 // Scroll to top for React Router
-import { ScrollToTop } from '@/components/ui/scroll-to-top';
+import ScrollToTop from '@/components/ui/scroll-to-top';
 
 function App() {
   return (
