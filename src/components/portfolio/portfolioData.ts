@@ -1,5 +1,5 @@
 
-import { PortfolioData } from './types';
+import { PortfolioData, PortfolioItem } from './types';
 
 // Portfolio data with categories
 export const portfolioData: PortfolioData = {
