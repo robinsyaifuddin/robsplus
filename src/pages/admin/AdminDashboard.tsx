@@ -84,7 +84,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ section = "overview" })
             <OrdersSection preview />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ServicesSection preview />
+            <ServicesSection />
             <PortfolioSection preview />
           </div>
           
