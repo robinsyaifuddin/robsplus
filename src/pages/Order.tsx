@@ -4,6 +4,7 @@ import PageTransition from '@/components/PageTransition';
 import Navbar from '@/components/Navbar';
 import OrderForm from '@/components/OrderForm';
 import Footer from '@/components/Footer';
+import { Helmet } from 'react-helmet';
 
 const Order = () => {
   useEffect(() => {
@@ -13,6 +14,10 @@ const Order = () => {
 
   return (
     <PageTransition>
+      <Helmet>
+        <title>Order Layanan - ROB'sPlus</title>
+        <meta name="description" content="Form pemesanan layanan ROB'sPlus untuk jasa digital, tugas, dan pembelajaran." />
+      </Helmet>
       <Navbar />
       <main className="min-h-screen bg-cyber-black pt-28 px-6">
         <div className="container mx-auto max-w-4xl">

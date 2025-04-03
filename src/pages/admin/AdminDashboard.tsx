@@ -1,16 +1,18 @@
+
 import React from 'react';
 import { 
   Activity, 
-  ShoppingCart, 
-  FileText, 
+  BarChart3, 
+  ChevronRight,
+  CreditCard,
+  Database,
+  Folder, 
+  GalleryVerticalEnd, 
+  Home, 
   Image, 
-  Briefcase, 
-  ChevronRight, 
-  TrendingUp, 
-  ArrowUpRight, 
-  ArrowDownRight 
+  Package2, 
+  Settings 
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
@@ -23,146 +25,105 @@ interface AdminDashboardProps {
   section?: string;
 }
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ section = 'dashboard' }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ section = "overview" }) => {
   const navigate = useNavigate();
   
-  // Show only the specified section if not on the main dashboard
-  if (section === 'analytics') {
-    return <AnalyticsSection />;
-  }
+  // Function to handle tab changes and update URL
+  const handleTabChange = (value: string) => {
+    navigate(`/admin/${value === 'overview' ? '' : value}`);
+  };
   
-  if (section === 'orders') {
-    return <OrdersSection />;
-  }
-  
-  if (section === 'services') {
-    return <ServicesSection />;
-  }
-  
-  if (section === 'portfolio') {
-    return <PortfolioSection />;
-  }
-  
-  // Dashboard Overview
   return (
-    <div className="p-6 space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Dashboard</h2>
-        <p className="text-sm text-gray-400">Selamat datang kembali, Admin</p>
+    <div className="p-6 space-y-6">
+      <div className="flex items-center gap-2 text-sm text-gray-400">
+        <Home size={14} />
+        <span>Admin</span>
+        <ChevronRight size={14} />
+        <span className="text-cyber-neonGreen font-medium">Dashboard</span>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glassmorphism border-cyber-lightBlue/30">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg text-cyber-neonGreen">Pendapatan</CardTitle>
-            <Activity size={20} className="text-cyber-neonGreen" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <p className="text-3xl font-bold">Rp 5.2M</p>
-              <div className="flex items-center text-green-500 text-xs">
-                <ArrowUpRight size={14} />
-                <span>12%</span>
-              </div>
-            </div>
-            <p className="text-xs text-gray-400 mt-1">+Rp 520.000 dari bulan lalu</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="glassmorphism border-cyber-lightBlue/30">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg text-cyber-neonGreen">Pesanan</CardTitle>
-            <ShoppingCart size={20} className="text-cyber-neonGreen" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <p className="text-3xl font-bold">82</p>
-              <div className="flex items-center text-green-500 text-xs">
-                <ArrowUpRight size={14} />
-                <span>8%</span>
-              </div>
-            </div>
-            <p className="text-xs text-gray-400 mt-1">+6 pesanan dari minggu lalu</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="glassmorphism border-cyber-lightBlue/30">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg text-cyber-neonGreen">Pengguna</CardTitle>
-            <Briefcase size={20} className="text-cyber-neonGreen" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <p className="text-3xl font-bold">128</p>
-              <div className="flex items-center text-red-500 text-xs">
-                <ArrowDownRight size={14} />
-                <span>3%</span>
-              </div>
-            </div>
-            <p className="text-xs text-gray-400 mt-1">-4 pengguna dari bulan lalu</p>
-          </CardContent>
-        </Card>
-      </div>
+      <h1 className="text-2xl font-bold text-white">Dashboard</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <AnalyticsSection preview={true} />
-        <OrdersSection preview={true} />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <PortfolioSection preview={true} />
-        <ServicesSection preview={true} />
-      </div>
-      
-      <div className="flex flex-col md:flex-row gap-6">
-        <Card className="glassmorphism border-cyber-lightBlue/30 flex-1">
-          <CardHeader>
-            <CardTitle className="text-lg text-cyber-neonGreen">Aktivitas Terbaru</CardTitle>
-            <CardDescription className="text-cyber-lightBlue">Aktivitas admin dalam 24 jam terakhir</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="bg-cyber-purple/20 p-2 rounded-full">
-                  <FileText size={16} className="text-cyber-lightBlue" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Pesanan Baru #ROB-2023</p>
-                  <p className="text-xs text-gray-400">Rizky Aditya telah memesan Jasa Pembuatan Website</p>
-                  <p className="text-xs text-gray-400">1 jam yang lalu</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="bg-cyber-neonGreen/20 p-2 rounded-full">
-                  <Image size={16} className="text-cyber-neonGreen" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Portfolio Ditambahkan</p>
-                  <p className="text-xs text-gray-400">Admin telah menambahkan portfolio "Desain UI Website E-commerce"</p>
-                  <p className="text-xs text-gray-400">3 jam yang lalu</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="bg-cyber-lightBlue/20 p-2 rounded-full">
-                  <TrendingUp size={16} className="text-cyber-lightBlue" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Pendapatan Meningkat</p>
-                  <p className="text-xs text-gray-400">Pendapatan minggu ini meningkat 15% dari minggu lalu</p>
-                  <p className="text-xs text-gray-400">8 jam yang lalu</p>
-                </div>
-              </div>
-            </div>
+      <Tabs 
+        defaultValue={section} 
+        className="w-full"
+        onValueChange={handleTabChange}
+      >
+        <div className="mb-6 overflow-x-auto">
+          <TabsList className="inline-flex h-10 bg-cyber-deepBlue/50">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-cyber-purple/20">
+              <Database className="mr-2 h-4 w-4" />
+              Overview
+            </TabsTrigger>
             
-            <Button variant="link" size="sm" className="text-cyber-neonGreen mt-2 px-0">
-              <span>Lihat semua aktivitas</span>
-              <ChevronRight size={16} />
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-cyber-purple/20">
+              <BarChart3 className="mr-2 h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+            
+            <TabsTrigger value="orders" className="data-[state=active]:bg-cyber-purple/20">
+              <CreditCard className="mr-2 h-4 w-4" />
+              Orders
+            </TabsTrigger>
+            
+            <TabsTrigger value="services" className="data-[state=active]:bg-cyber-purple/20">
+              <Package2 className="mr-2 h-4 w-4" />
+              Services
+            </TabsTrigger>
+            
+            <TabsTrigger value="portfolio" className="data-[state=active]:bg-cyber-purple/20">
+              <Image className="mr-2 h-4 w-4" />
+              Portfolio
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <AnalyticsSection preview />
+            <OrdersSection preview />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ServicesSection preview />
+            <PortfolioSection preview />
+          </div>
+          
+          <div className="flex justify-end gap-4">
+            <Button
+              variant="outline" 
+              className="border-cyber-lightBlue/30 text-cyber-lightBlue"
+              onClick={() => navigate('/admin/settings')}
+            >
+              <Settings size={16} className="mr-2" />
+              Settings
             </Button>
-          </CardContent>
-        </Card>
-      </div>
+            
+            <Button
+              className="bg-cyber-purple hover:bg-cyber-purple/80"
+              onClick={() => navigate('/admin/files')}
+            >
+              <Folder size={16} className="mr-2" />
+              Manage Files
+            </Button>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="analytics">
+          <AnalyticsSection />
+        </TabsContent>
+        
+        <TabsContent value="orders">
+          <OrdersSection />
+        </TabsContent>
+        
+        <TabsContent value="services">
+          <ServicesSection />
+        </TabsContent>
+        
+        <TabsContent value="portfolio">
+          <PortfolioSection />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

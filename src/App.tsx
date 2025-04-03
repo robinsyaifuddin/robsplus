@@ -1,8 +1,9 @@
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 import { PortfolioProvider } from '@/contexts/PortfolioContext';
+import { Helmet } from 'react-helmet';
 import './App.css';
 
 // Pages
@@ -16,9 +17,7 @@ import NotFound from '@/pages/NotFound';
 import AdminLayout from '@/pages/admin/AdminLayout';
 import AdminLogin from '@/pages/admin/AdminLogin';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
-
-// Page transition
-import PageTransition from '@/components/PageTransition';
+import AdminRoute from '@/components/admin/AdminRoute';
 
 // Scroll to top for React Router
 import ScrollToTop from '@/components/ui/scroll-to-top';
@@ -27,17 +26,26 @@ function App() {
   return (
     <AdminAuthProvider>
       <PortfolioProvider>
+        <Helmet>
+          <title>Official ROB'sPlus</title>
+          <meta name="description" content="ROB'sPlus - Layanan jasa digital, pembuatan web, desain, dan jasa tugas." />
+        </Helmet>
         <Router>
           <ScrollToTop />
           <Routes>
-            <Route path="/" element={<PageTransition><Index /></PageTransition>} />
-            <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-            <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
-            <Route path="/order" element={<PageTransition><Order /></PageTransition>} />
+            {/* Public routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/order" element={<Order />} />
             
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
+            <Route path="/admin" element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }>
               <Route index element={<AdminDashboard />} />
               <Route path="analytics" element={<AdminDashboard section="analytics" />} />
               <Route path="orders" element={<AdminDashboard section="orders" />} />
@@ -46,6 +54,7 @@ function App() {
             </Route>
             
             {/* 404 */}
+            <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster position="top-right" />
