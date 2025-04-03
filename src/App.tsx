@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 import { PortfolioProvider } from '@/contexts/PortfolioContext';
