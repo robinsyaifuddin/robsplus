@@ -1,10 +1,10 @@
 
 import { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import PageTransition from '@/components/PageTransition';
 import Navbar from '@/components/Navbar';
 import OrderForm from '@/components/OrderForm';
 import Footer from '@/components/Footer';
-import { Helmet } from 'react-helmet';
 
 const Order = () => {
   useEffect(() => {
