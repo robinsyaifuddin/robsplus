@@ -20,7 +20,7 @@ interface EditPortfolioDialogProps {
   onOpenChange: (open: boolean) => void;
   onSubmit: () => void;
   portfolio: Portfolio | null;
-  setPortfolio: React.Dispatch<React.SetStateAction<Portfolio | null>>;
+  setPortfolio?: React.Dispatch<React.SetStateAction<Portfolio | null>>;
   selectedFile: File | null;
   previewUrl: string;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -42,6 +42,12 @@ const EditPortfolioDialog: React.FC<EditPortfolioDialogProps> = ({
 }) => {
   if (!portfolio) return null;
   
+  const handleChange = (update: Partial<Portfolio>) => {
+    if (setPortfolio) {
+      setPortfolio(prev => prev ? { ...prev, ...update } : null);
+    }
+  };
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[525px]">
@@ -57,7 +63,7 @@ const EditPortfolioDialog: React.FC<EditPortfolioDialogProps> = ({
             <Input
               id="edit-title"
               value={portfolio.title}
-              onChange={(e) => setPortfolio({...portfolio, title: e.target.value})}
+              onChange={(e) => handleChange({ title: e.target.value })}
             />
           </div>
           <div className="space-y-2">
@@ -65,7 +71,7 @@ const EditPortfolioDialog: React.FC<EditPortfolioDialogProps> = ({
             <Input
               id="edit-category"
               value={portfolio.category}
-              onChange={(e) => setPortfolio({...portfolio, category: e.target.value})}
+              onChange={(e) => handleChange({ category: e.target.value })}
             />
           </div>
           <div className="space-y-2">
@@ -74,7 +80,7 @@ const EditPortfolioDialog: React.FC<EditPortfolioDialogProps> = ({
               id="edit-date"
               type="date"
               value={portfolio.date}
-              onChange={(e) => setPortfolio({...portfolio, date: e.target.value})}
+              onChange={(e) => handleChange({ date: e.target.value })}
             />
           </div>
           <div className="space-y-2">
@@ -82,7 +88,7 @@ const EditPortfolioDialog: React.FC<EditPortfolioDialogProps> = ({
             <Textarea
               id="edit-description"
               value={portfolio.description}
-              onChange={(e) => setPortfolio({...portfolio, description: e.target.value})}
+              onChange={(e) => handleChange({ description: e.target.value })}
               rows={3}
             />
           </div>

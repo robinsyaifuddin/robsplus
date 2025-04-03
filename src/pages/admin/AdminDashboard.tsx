@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Activity, 
@@ -15,10 +14,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
-import AnalyticsSection from '../../../components/admin/dashboard/AnalyticsSection';
-import OrdersSection from '../../../components/admin/dashboard/OrdersSection';
-import PortfolioSection from '../../../components/admin/dashboard/portfolio/PortfolioSection';
-import ServicesSection from '../../../components/admin/dashboard/ServicesSection';
+import AnalyticsSection from '@/components/admin/dashboard/AnalyticsSection';
+import OrdersSection from '@/components/admin/dashboard/OrdersSection';
+import PortfolioSection from '@/components/admin/dashboard/portfolio/PortfolioSection';
+import ServicesSection from '@/components/admin/dashboard/ServicesSection';
 
 interface AdminDashboardProps {
   section?: string;

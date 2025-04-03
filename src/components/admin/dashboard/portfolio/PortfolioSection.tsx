@@ -112,6 +112,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({ preview = false }) 
         onOpenChange={setIsEditDialogOpen}
         onSubmit={handleEditPortfolio}
         portfolio={currentPortfolio}
+        setPortfolio={setCurrentPortfolio}
         selectedFile={selectedFile}
         previewUrl={previewUrl}
         onFileChange={handleFileChange}
