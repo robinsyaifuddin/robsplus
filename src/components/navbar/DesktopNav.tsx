@@ -27,7 +27,7 @@ const DesktopNav = ({ navLinks, activeSection, handleNavigation, isHashActive }:
   return (
     <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
       <ul className="flex space-x-2 lg:space-x-4">
-        {navLinks.map((link) => (
+        {navLinks.filter(link => !link.isAdmin).map((link) => (
           <li key={link.text}>
             <NavItem 
               href={link.href} 
@@ -56,6 +56,13 @@ const DesktopNav = ({ navLinks, activeSection, handleNavigation, isHashActive }:
         <Phone size={12} />
         <span>Konsultasi</span>
       </a>
+      
+      <NavItem
+        href="/admin/login"
+        text="Admin"
+        isActive={location.pathname.includes('/admin')}
+        onClick={() => {}}
+      />
     </div>
   );
 };

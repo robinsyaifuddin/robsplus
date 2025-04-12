@@ -1,7 +1,7 @@
 
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Phone } from 'lucide-react';
+import { Phone, Lock } from 'lucide-react';
 import MobileNavItem from './MobileNavItem';
 import CTAButton from '../CTAButton';
 
@@ -30,7 +30,7 @@ const MobileNav = ({ isMenuOpen, navLinks, handleNavigation, isHashActive }: Mob
       transition={{ duration: 0.2 }}
     >
       <ul className="flex flex-col space-y-4">
-        {navLinks.map((link) => (
+        {navLinks.filter(link => !link.isAdmin).map((link) => (
           <li key={link.text}>
             <MobileNavItem 
               href={link.href} 
@@ -58,6 +58,15 @@ const MobileNav = ({ isMenuOpen, navLinks, handleNavigation, isHashActive }: Mob
           >
             <Phone size={14} />
             <span>Konsultasi</span>
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/admin/login"
+            className="flex items-center gap-1 text-sm text-cyber-lightBlue hover:underline w-full justify-center"
+          >
+            <Lock size={14} />
+            <span>Admin</span>
           </a>
         </li>
       </ul>

@@ -12,8 +12,6 @@ export const navLinks = [
     ]
   },
   { text: 'Portofolio', href: '/#portfolio' },
-  { text: 'Tentang Kami', href: '/about' }
+  { text: 'Tentang Kami', href: '/about' },
+  { text: 'Admin', href: '/admin/login', isAdmin: true }
 ];
-
-// Separate hidden admin link (not displayed in menu)
-export const adminLink = { text: 'Admin', href: '/admin/login', isHidden: true };
